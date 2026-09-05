@@ -1,3 +1,4 @@
+import { setTimeout as delay } from "node:timers/promises";
 import { normalizeBasstokOrigin } from "./origin.js";
 import { isIdempotencyKey } from "./ids.js";
 
@@ -754,29 +755,24 @@ export class BasstokClient {
     assetId: string,
     input: { actor_id?: string; range?: string } = {},
   ): Promise<Uint8Array<ArrayBuffer>> {
-    const accessToken = await this.#currentAccessToken();
-    const response = await this.#fetch(
-      new URL(
-        withQuery(`/api/v1/assets/${encodeURIComponent(assetId)}`, {
-          actor_id: input.actor_id,
-        }),
-        this.#origin,
-      ),
+    return this.#send(
+      withQuery(`/api/v1/assets/${encodeURIComponent(assetId)}`, { actor_id: input.actor_id }),
       {
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           Accept: "application/octet-stream",
           ...(input.range === undefined ? {} : { Range: input.range }),
         },
-        signal: requestSignal(),
+      },
+      async (response) => {
+        if (!response.ok) await this.#decode<never>(response);
+        return new Uint8Array(await readBoundedBody(
+          response,
+          maximumBufferedAssetBytes,
+          "Asset response exceeds the 8 MiB buffered-client limit",
+        ));
       },
     );
-    if (!response.ok) await this.#decode<never>(response);
-    return new Uint8Array(await readBoundedBody(
-      response,
-      maximumBufferedAssetBytes,
-      "Asset response exceeds the 8 MiB buffered-client limit",
-    ));
   }
 
   async attachChatAsset(
@@ -901,19 +897,15 @@ export class BasstokClient {
     if (bytes.byteLength === 0 || bytes.byteLength > maximumBytes) {
       throw new Error("Asset upload bytes are outside the supported range");
     }
-    const accessToken = await this.#currentAccessToken();
-    const response = await this.#fetch(new URL(path, this.#origin), {
+    return this.#send(path, {
       method,
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         Accept: "application/json",
         "Content-Type": "application/octet-stream",
         ...headers,
       },
       body: bytes,
-      signal: requestSignal(),
-    });
-    return this.#decode<T>(response);
+    }, (response) => this.#decode<T>(response));
   }
 
   async #request<T>(
@@ -922,20 +914,47 @@ export class BasstokClient {
     body?: unknown,
     headers: Record<string, string> = {},
   ): Promise<T> {
-    const accessToken = await this.#currentAccessToken();
-    const response = await this.#fetch(new URL(path, this.#origin), {
+    return this.#send(path, {
       method,
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         Accept: "application/json",
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
         ...headers,
       },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-      signal: requestSignal(),
-    });
+    }, (response) => this.#decode<T>(response));
+  }
 
-    return this.#decode<T>(response);
+  async #send<T>(
+    path: string,
+    request: RequestInit,
+    decode: (response: Response) => Promise<T>,
+  ): Promise<T> {
+    const headers = new Headers(request.headers);
+    const replaySafe = ["GET", "PUT", "DELETE"].includes(request.method ?? "GET") ||
+      (request.method === "POST" && headers.has("Idempotency-Key"));
+    const deadline = performance.now() + requestTimeoutMs;
+    const signal = AbortSignal.timeout(requestTimeoutMs);
+    for (let attempt = 0; ; ++attempt) {
+      // Credential rotation failures are not REST failures and must never be replayed here.
+      headers.set("Authorization", `Bearer ${await this.#currentAccessToken()}`);
+      let response: Response | undefined;
+      try {
+        response = await this.#fetch(new URL(path, this.#origin), {
+          ...request, headers, signal, redirect: "error",
+        });
+        return await decode(response);
+      } catch (error) {
+        const transient = error instanceof BasstokApiError
+          ? error.retryable && (error.status === 409 || error.status === 429 || error.status >= 500)
+          : response === undefined && error instanceof TypeError;
+        if (!replaySafe || !transient || attempt >= 2 || signal.aborted) throw error;
+        const backoff = Math.ceil(250 * 2 ** attempt + Math.random() * 125);
+        const wait = Math.max(backoff, retryAfterMs(response?.headers.get("retry-after")));
+        if (performance.now() + wait >= deadline) throw error;
+        await delay(wait, undefined, { signal });
+      }
+    }
   }
 
   async #currentAccessToken(): Promise<string> {
@@ -991,8 +1010,11 @@ function requireIdempotencyKey(value: string): void {
   }
 }
 
-function requestSignal(): AbortSignal {
-  return AbortSignal.timeout(requestTimeoutMs);
+function retryAfterMs(value: string | null | undefined): number {
+  if (value == null) return 0;
+  if (/^\d+$/.test(value)) return Number(value) * 1_000;
+  const date = Date.parse(value);
+  return Number.isFinite(date) ? Math.max(0, date - Date.now()) : 0;
 }
 
 async function readBoundedBody(

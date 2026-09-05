@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createServer } from "node:http";
+import { createServer, request as httpRequest } from "node:http";
 import type { AddressInfo } from "node:net";
 import test from "node:test";
 
@@ -57,6 +57,58 @@ test("PKCE and authorization URL use S256", () => {
   assert.equal(url.pathname, "/oauth/authorize");
   assert.equal(url.searchParams.get("code_challenge_method"), "S256");
   assert.equal(url.searchParams.get("scope"), "content:read moderation:write");
+});
+
+test("callback rejects wrong methods, hosts and duplicate fields before accepting consent", async () => {
+  const port = await availablePort();
+  let responses: Promise<void> | undefined;
+  let exchanges = 0;
+  await authorizeWithLoopback("https://community.example", {
+    clientId: "agent", scopes: ["content:read"], port,
+    onReady: (url, redirect) => {
+      responses = (async () => {
+        const callback = `${redirect}?state=${new URL(url).searchParams.get("state")}` +
+          `&code=fixture-code&iss=${encodeURIComponent("https://community.example")}`;
+        assert.equal((await fetch(callback, { method: "POST" })).status, 400);
+        const wrongHost = await new Promise<number | undefined>((resolve, reject) => {
+          const request = httpRequest(callback, { headers: { Host: "agent.example" } }, (response) => {
+            response.resume();
+            resolve(response.statusCode);
+          });
+          request.on("error", reject);
+          request.end();
+        });
+        assert.equal(wrongHost, 400);
+        assert.equal((await fetch(callback + "&code=other")).status, 400);
+        assert.equal(exchanges, 0);
+        const accepted = await fetch(callback);
+        assert.equal(accepted.status, 200);
+        assert.equal(accepted.headers.get("cache-control"), "no-store");
+      })();
+    },
+  }, async (_url, init) => {
+    ++exchanges;
+    assert.equal(init?.redirect, "error");
+    return Response.json({ access_token: "fixture-access", refresh_token: "fixture-refresh",
+      expires_in: 3600, scope: "content:read", grant_id: "grant", token_type: "Bearer" });
+  });
+  await responses;
+  assert.equal(exchanges, 1);
+});
+
+test("callback setup errors and timeouts release the local listener", async () => {
+  const port = await availablePort();
+  await assert.rejects(authorizeWithLoopback("https://community.example", {
+    clientId: "agent", scopes: ["content:read"], port,
+    onReady: () => { throw new Error("Could not present authorization"); },
+  }), /Could not present/);
+  await assert.rejects(authorizeWithLoopback("https://community.example", {
+    clientId: "agent", scopes: ["content:read"], port, timeoutMs: 20,
+    onReady: () => {},
+  }), /timed out/);
+  const server = createServer();
+  await new Promise<void>((resolve) => server.listen(port, "127.0.0.1", resolve));
+  await new Promise<void>((resolve) => server.close(() => resolve()));
 });
 
 test("authorization code exchange uses form encoding", async () => {

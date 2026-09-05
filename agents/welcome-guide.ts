@@ -1,7 +1,7 @@
 import type { BasstokClient, Member } from "../src/basstok.js";
 import { isMainModule } from "../src/environment.js";
 import { idempotencyKey } from "../src/ids.js";
-import { serveAgentWebhooks } from "../src/webhooks.js";
+import { serveAgent } from "../src/webhooks.js";
 
 const welcome =
   "Welcome to the community. Reply here if you would like help getting started.";
@@ -32,5 +32,5 @@ export async function welcomeMember(
 }
 
 if (isMainModule(import.meta.url)) {
-  await serveAgentWebhooks({ name: "Welcome guide", onMemberCreated: welcomeMember });
+  await serveAgent({ name: "Welcome guide", onMemberCreated: welcomeMember });
 }

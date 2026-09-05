@@ -1,7 +1,7 @@
 import type { BasstokClient, Content, ReactionKind } from "../src/basstok.js";
 import { isMainModule, requiredEnvironment } from "../src/environment.js";
 import { deterministicId } from "../src/ids.js";
-import { serveAgentWebhooks } from "../src/webhooks.js";
+import { serveAgent } from "../src/webhooks.js";
 
 const reactions: readonly ReactionKind[] = ["Like", "Love", "Celebrate", "Insightful"];
 
@@ -56,7 +56,7 @@ function escapeMarkdown(value: string): string {
 
 if (isMainModule(import.meta.url)) {
   const labelId = requiredEnvironment("BASSTOK_POLL_LABEL_ID");
-  await serveAgentWebhooks({
+  await serveAgent({
     name: "Quick polls",
     onContentChanged: (content, api) => publishPollGuide(content, api, labelId),
   });

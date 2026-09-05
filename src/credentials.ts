@@ -16,7 +16,7 @@ import {
 } from "./oauth.js";
 import { normalizeBasstokOrigin } from "./origin.js";
 
-export const defaultCredentialsFile = ".basstok-agent-credentials.json";
+export const defaultCredentialsFile = ".basstok-agent.json.credentials";
 
 export function assertProtectedCredentialFileSupport(
   platform: NodeJS.Platform,
@@ -412,7 +412,7 @@ async function acquireGuard(path: string, nonce: string, credentialPath: string)
   }
 }
 
-async function readProtectedFile(path: string, maximumBytes: number): Promise<string> {
+export async function readProtectedFile(path: string, maximumBytes: number): Promise<string> {
   let handle: FileHandle;
   try {
     const noFollow = process.platform === "win32" ? 0 : constants.O_NOFOLLOW;
@@ -464,7 +464,7 @@ async function removeMatchingLease(path: string, expected: LeaseRecord): Promise
   }
 }
 
-async function atomicWriteProtected(path: string, text: string): Promise<void> {
+export async function atomicWriteProtected(path: string, text: string): Promise<void> {
   const temporary = resolve(
     dirname(path),
     `${basename(path)}.new-${randomBytes(12).toString("hex")}`,

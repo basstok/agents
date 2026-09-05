@@ -103,6 +103,10 @@ access.
 
 ## OAuth
 
+The supplied [connection command](connecting.md) and `serveAgent` helper handle
+this protocol, token rotation, and signed delivery for TypeScript Agents. The
+following reference is for integrations that need the wire contract directly.
+
 Send an OAuth access token as a bearer token:
 
 ```http

@@ -10,14 +10,9 @@ import {
 } from "./basstok.js";
 import {
   CredentialAuthorizationRequiredError,
-  defaultCredentialsFile,
   RotatingCredentials,
 } from "./credentials.js";
-import {
-  environmentPort,
-  optionalEnvironment,
-  requiredEnvironment,
-} from "./environment.js";
+import { defaultConnectionFile, readConnection } from "./connection.js";
 
 interface WebhookEnvelope {
   id: string;
@@ -246,23 +241,31 @@ export function createAgentWebhookServer(
   return server;
 }
 
-export async function serveAgentWebhooks(
+export async function serveAgent(
   handlers: AgentWebhookHandlers,
+  options: { connectionFile?: string } = {},
 ): Promise<Server> {
-  const basstokUrl = requiredEnvironment("BASSTOK_URL");
+  const path = options.connectionFile ?? process.env.BASSTOK_CONNECTION_FILE ?? defaultConnectionFile;
+  const connection = await readConnection(path);
+  const handler = {
+    "content.changed": handlers.onContentChanged,
+    "member.created": handlers.onMemberCreated,
+    "chat.changed": handlers.onChatChanged,
+  }[connection.event];
+  if (handler === undefined) throw new Error(`Agent has no handler for ${connection.event}; check your connection`);
   const credentials = await RotatingCredentials.open(
-    optionalEnvironment("BASSTOK_CREDENTIALS_FILE") ?? defaultCredentialsFile,
-    {
-      basstokUrl,
-      clientId: requiredEnvironment("BASSTOK_CLIENT_ID"),
-    },
+    `${path}.credentials`,
+    { basstokUrl: connection.origin, clientId: connection.clientId },
   );
   try {
-    const api = new BasstokClient(basstokUrl, credentials);
+    const api = new BasstokClient(connection.origin, credentials);
     let server: Server;
     server = createAgentWebhookServer({
       secret: credentials.webhookSecret,
-      onEvent: (event) => dispatchAgentWebhook(event, handlers, api),
+      onEvent: async (event) => {
+        if (event.event !== connection.event) throw new Error("Webhook event does not match this connection");
+        await dispatchAgentWebhook(event, handlers, api);
+      },
       onError: (error) => {
         console.error(error);
         if (error instanceof CredentialAuthorizationRequiredError) server.close();
@@ -271,7 +274,7 @@ export async function serveAgentWebhooks(
     server.once("close", () => {
       void credentials.close().catch(console.error);
     });
-    const port = environmentPort("PORT", 3000);
+    const port = connection.port;
     await new Promise<void>((resolve, reject) => {
       const onError = (error: Error): void => {
         server.off("listening", onListening);

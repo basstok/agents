@@ -6,7 +6,7 @@ import {
 } from "../src/basstok.js";
 import { isMainModule, requiredEnvironment } from "../src/environment.js";
 import { deterministicId } from "../src/ids.js";
-import { serveAgentWebhooks } from "../src/webhooks.js";
+import { serveAgent } from "../src/webhooks.js";
 
 const commentLimit = 100;
 const closeAtVisibleComments = 20;
@@ -123,7 +123,7 @@ function recap(comments: Comment[]): string {
 
 if (isMainModule(import.meta.url)) {
   const labelId = requiredEnvironment("BASSTOK_CLOSEOUT_LABEL_ID");
-  await serveAgentWebhooks({
+  await serveAgent({
     name: "Discussion closeout",
     onContentChanged: (content, api) => closeDiscussion(content, api, labelId),
   });

@@ -16,11 +16,11 @@ Basstok.
 
 ```ts
 import { requiredEnvironment } from "./src/environment.js";
-import { serveAgentWebhooks } from "./src/webhooks.js";
+import { serveAgent } from "./src/webhooks.js";
 
 const labelId = requiredEnvironment("BASSTOK_FAVORITES_LABEL_ID");
 
-await serveAgentWebhooks({
+await serveAgent({
   name: "Community favorites",
   onContentChanged: async (content, api) => {
     const selected = content.labels.some(({ id }) => id === labelId);
@@ -33,8 +33,8 @@ await serveAgentWebhooks({
 ```
 
 The shared helper keeps credential rotation, the bounded listener, signature
-verification, delivery deduplication, and REST dereference out of the capability
-code. It is compact reference code over the documented HTTPS, OAuth, JSON, and
+verification, delivery deduplication, REST dereference, and bounded retries out
+of the capability code. It is compact reference code over the documented HTTPS, OAuth, JSON, and
 webhook contracts, not a required SDK or proprietary runtime.
 
 ## Included Agents
@@ -53,14 +53,29 @@ duplicate webhook delivery and safe retries converge.
 
 ## Start here
 
+With a registered application and an HTTPS webhook URL:
+
+```sh
+npm ci
+npm run build
+npm run connect -- https://community.example
+npm start
+```
+
+`connect` prompts for the application ID and webhook URL, handles browser consent
+and the local callback, and saves owner-only credentials. Welcome guide is the
+default; `--agent community-favorites` selects another supplied capability.
+There are no tokens or signing secrets to paste into your program. After
+`npm link`, the command is also available as `basstok-agent connect`.
+
 - [Getting started](docs/getting-started.md)
 - [Writing an Agent](docs/writing-an-agent.md)
+- [Connection setup and operation](docs/connecting.md)
 - [Official Agents](docs/official-agents.md)
 - [Agent REST API](docs/rest-api.md)
 - [FAQ](docs/faq.md)
 
 ```sh
-npm ci
 npm run check
 ```
 

@@ -1,7 +1,7 @@
 import type { BasstokClient, Content } from "../src/basstok.js";
 import { isMainModule, requiredEnvironment } from "../src/environment.js";
 import { idempotencyKey } from "../src/ids.js";
-import { serveAgentWebhooks } from "../src/webhooks.js";
+import { serveAgent } from "../src/webhooks.js";
 
 export async function acknowledgeHelpRequest(
   content: Content,
@@ -34,7 +34,7 @@ export async function acknowledgeHelpRequest(
 
 if (isMainModule(import.meta.url)) {
   const labelId = requiredEnvironment("BASSTOK_HELP_LABEL_ID");
-  await serveAgentWebhooks({
+  await serveAgent({
     name: "Help desk",
     onContentChanged: (content, api) => acknowledgeHelpRequest(content, api, labelId),
   });

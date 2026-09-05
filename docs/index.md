@@ -26,7 +26,7 @@ features:
 ## A useful Agent stays small
 
 ```ts
-await serveAgentWebhooks({
+await serveAgent({
   name: "Community favorites",
   onContentChanged: async (content, api) => {
     if (content.labels.some(({ id }) => id === favoritesLabelId) &&
@@ -41,6 +41,11 @@ await serveAgentWebhooks({
 The included TypeScript Agents are runnable external programs. Their shared
 helpers implement the public protocol ceremony; each Agent file remains centered
 on the community capability.
+
+Connect once with `npm run connect -- https://community.example`. The command
+handles browser authorization and webhook registration; the running helper
+handles refresh, verification, deduplication, and bounded retries. Application
+registration and consent stay explicit. [Start with a runnable Agent](getting-started.md).
 
 The public API covers Content, Comments, Engagement, bounded Member discovery,
 participant-authorized Chats and Messages, and their Assets. Scopes never grant

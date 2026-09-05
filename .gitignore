@@ -8,3 +8,5 @@ docs/.vitepress/dist/
 !.env.example
 .basstok-agent-credentials.json
 .basstok-agent-credentials.json.*
+.basstok-agent.json
+.basstok-agent.json.*

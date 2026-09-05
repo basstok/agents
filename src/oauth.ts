@@ -87,6 +87,11 @@ export async function authorizeWithLoopback(
   fetchImpl: typeof fetch = fetch,
 ): Promise<OAuthTokens> {
   const basstokOrigin = normalizeBasstokOrigin(origin);
+  if (!Number.isSafeInteger(input.port) || input.port < 1 || input.port > 65_535 ||
+      (input.timeoutMs !== undefined && (!Number.isSafeInteger(input.timeoutMs) ||
+        input.timeoutMs < 1 || input.timeoutMs > 10 * 60 * 1_000))) {
+    throw new Error("Invalid OAuth callback port or timeout");
+  }
   const redirectUri = `http://127.0.0.1:${input.port}/callback`;
   const state = randomBytes(32).toString("base64url");
   const pkce = createPkce();
@@ -102,14 +107,25 @@ export async function authorizeWithLoopback(
     let finished = false;
     let callbackInFlight = false;
     let timer: NodeJS.Timeout | undefined;
-    const server = createServer(async (request, response) => {
+    const server = createServer({
+      maxHeaderSize: 8_192, requestTimeout: 5_000, headersTimeout: 5_000,
+      keepAliveTimeout: 1_000, connectionsCheckingInterval: 1_000,
+    }, async (request, response) => {
       try {
+        response.setHeader("Cache-Control", "no-store");
+        response.setHeader("Referrer-Policy", "no-referrer");
+        if (request.method !== "GET" || request.headers.host !== `127.0.0.1:${input.port}` ||
+            !request.url?.startsWith("/")) {
+          response.writeHead(400).end();
+          return;
+        }
         const callback = new URL(request.url ?? "/", redirectUri);
         if (callback.pathname !== "/callback") {
           response.writeHead(404).end();
           return;
         }
-        if (callback.searchParams.get("state") !== state) {
+        if (["state", "code", "iss", "error"].some((key) => callback.searchParams.getAll(key).length > 1) ||
+            callback.searchParams.get("state") !== state) {
           response.writeHead(400).end("OAuth state did not match.\n");
           return;
         }
@@ -119,13 +135,17 @@ export async function authorizeWithLoopback(
         }
         callbackInFlight = true;
         const error = callback.searchParams.get("error");
-        if (error !== null) throw new Error(`Authorization failed: ${error}`);
+        if (error !== null) throw new Error("Authorization was not approved");
         const issuer = callback.searchParams.get("iss");
         if (issuer !== basstokOrigin) {
           throw new Error("OAuth issuer did not match the Basstok URL");
         }
         const code = callback.searchParams.get("code");
-        if (code === null) throw new Error("Authorization response has no code");
+        if (code === null || code.length === 0 || code.length > 2_048) {
+          throw new Error("Authorization response has no valid code");
+        }
+        // The one-use exchange has its own bounded deadline; do not abandon returned credentials.
+        if (timer !== undefined) clearTimeout(timer);
 
         const tokens = await exchangeAuthorizationCode(basstokOrigin, {
           clientId: input.clientId,
@@ -147,12 +167,19 @@ export async function authorizeWithLoopback(
       finished = true;
       if (timer !== undefined) clearTimeout(timer);
       server.close();
+      if (error !== undefined) server.closeAllConnections();
       if (error !== undefined) reject(error);
       else if (tokens !== undefined) resolve(tokens);
     };
 
     server.once("error", finish);
-    server.listen(input.port, "127.0.0.1", () => input.onReady(url, redirectUri));
+    server.maxConnections = 8;
+    server.maxRequestsPerSocket = 4;
+    server.setTimeout(5_000, (socket) => socket.destroy());
+    server.listen(input.port, "127.0.0.1", () => {
+      try { input.onReady(url, redirectUri); }
+      catch (error) { finish(error); }
+    });
     timer = setTimeout(
       () => finish(new Error("Authorization timed out")),
       input.timeoutMs ?? 10 * 60 * 1_000,
@@ -207,6 +234,7 @@ export async function revokeToken(
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: form,
+      redirect: "error",
       signal: oauthRequestSignal(),
     },
   );
@@ -241,6 +269,7 @@ async function tokenRequest(
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams(fields),
+    redirect: "error",
     signal: oauthRequestSignal(),
   });
   const text = await readBoundedText(response, 64 * 1024);

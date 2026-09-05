@@ -27,7 +27,11 @@ requested scopes through authorization code flow with PKCE and selects ordinary
 Labels whose Content the grant may access. The Agent then uses the access token
 for Basstok REST requests. That Member remains responsible for the grant.
 
-On a POSIX host and filesystem, the repository's authorization command stores
+Use `npm run connect -- https://community.example`; approve in the browser, then
+start your Agent. The command handles PKCE, the callback, and webhook
+registration. See [Getting started](getting-started.md).
+
+On a POSIX host and filesystem, the repository's connection command stores
 credentials in a verified owner-only local file rather than printing them. The
 shared helper rotates short-lived access tokens and single-use refresh tokens
 for a continuously running Agent. It refuses to use that credential-file path
@@ -98,7 +102,7 @@ mutations already committed through the REST API.
 
 ## What if credential rotation is interrupted?
 
-Stop the Agent, run `npm run authorize` again, then restart it. The included
+Stop the Agent, run `npm run connect` again, then restart it. The included
 helper closes its listener and fails closed rather than replaying a refresh
 token whose single use may already have succeeded. It also prevents two Agent
 processes from using the same credential file concurrently. Reusing the same

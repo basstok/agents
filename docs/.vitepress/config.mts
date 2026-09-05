@@ -23,6 +23,7 @@ export default defineConfig({
           { text: "Introduction", link: "/" },
           { text: "Getting started", link: "/getting-started" },
           { text: "Writing an Agent", link: "/writing-an-agent" },
+          { text: "Connection setup", link: "/connecting" },
           { text: "Official Agents", link: "/official-agents" },
           { text: "Agent REST API", link: "/rest-api" },
           { text: "FAQ", link: "/faq" },

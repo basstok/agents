@@ -1,6 +1,6 @@
 import type { BasstokClient, Content } from "../src/basstok.js";
 import { isMainModule, requiredEnvironment } from "../src/environment.js";
-import { serveAgentWebhooks } from "../src/webhooks.js";
+import { serveAgent } from "../src/webhooks.js";
 
 const featureAt = 5;
 
@@ -18,7 +18,7 @@ export async function featureCommunityFavorite(
 
 if (isMainModule(import.meta.url)) {
   const labelId = requiredEnvironment("BASSTOK_FAVORITES_LABEL_ID");
-  await serveAgentWebhooks({
+  await serveAgent({
     name: "Community favorites",
     onContentChanged: (content, api) => featureCommunityFavorite(content, api, labelId),
   });
