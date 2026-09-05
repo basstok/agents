@@ -15,6 +15,7 @@ export default defineConfig({
       { text: "Official Agents", link: "/official-agents" },
       { text: "REST API", link: "/rest-api" },
       { text: "FAQ", link: "/faq" },
+      { text: "Basstok", link: "https://basstok.com/" },
     ],
     sidebar: [
       {
