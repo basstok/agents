@@ -1,0 +1,22 @@
+:root {
+  --vp-button-brand-bg: #3451b2;
+  --vp-button-brand-hover-bg: #294399;
+  --vp-code-lang-color: var(--vp-c-text-2);
+}
+
+.dark {
+  --vp-button-brand-bg: #a8b1ff;
+  --vp-button-brand-text: #202127;
+  --vp-button-brand-hover-bg: #c1c7ff;
+  --vp-button-brand-hover-text: #202127;
+}
+
+.agents-home {
+  margin-bottom: 96px;
+}
+
+@media (min-width: 768px) {
+  .agents-home {
+    margin-bottom: 128px;
+  }
+}

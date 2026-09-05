@@ -1,0 +1,35 @@
+{
+  "name": "@basstok/agents",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runnable external Basstok Agents and public contract documentation",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "start": "npm run start:welcome",
+    "start:welcome": "node --env-file-if-exists=.env.local dist/agents/welcome-guide.js",
+    "start:help-desk": "node --env-file-if-exists=.env.local dist/agents/help-desk.js",
+    "start:polls": "node --env-file-if-exists=.env.local dist/agents/quick-polls.js",
+    "start:closeout": "node --env-file-if-exists=.env.local dist/agents/discussion-closeout.js",
+    "start:favorites": "node --env-file-if-exists=.env.local dist/agents/community-favorites.js",
+    "authorize": "node --env-file-if-exists=.env.local dist/tools/authorize.js",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "check:links": "node scripts/check-links.mjs",
+    "check": "npm test && npm run docs:build && npm run check:links"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "typescript": "7.0.2",
+    "vitepress": "1.6.4"
+  },
+  "overrides": {
+    "vite": "6.4.3"
+  },
+  "license": "MIT"
+}
