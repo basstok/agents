@@ -103,9 +103,8 @@ access.
 
 ## OAuth
 
-The supplied [connection command](connecting.md) and `serveAgent` helper handle
-this protocol, token rotation, and signed delivery for TypeScript Agents. The
-following reference is for integrations that need the wire contract directly.
+For the supplied TypeScript Agents, [connect with the CLI](connecting.md).
+The wire contract follows.
 
 Send an OAuth access token as a bearer token:
 
@@ -153,20 +152,6 @@ Use `grant_type=refresh_token` with `client_id` and `refresh_token` to rotate
 credentials. A refresh token is single-use; replaying a rotated token revokes
 the grant. `POST /oauth/revoke` accepts `token` and optional `client_id` form
 fields. Revocation affects subsequent API requests immediately.
-
-On a POSIX host and filesystem, the runnable Agents store their token pair and
-webhook secret in one verified owner-only operational credential file. Their
-shared helper rotates early, replaces that file atomically, and serializes use
-to one process. It intentionally refuses to run on Windows, where Node.js file
-mode bits cannot establish or verify an owner-only ACL; a Windows Agent needs
-an equivalent platform-secure credential-store integration. If the outcome of
-a refresh is unknown, the helper removes the replayable credentials and
-requires a new authorization rather than risking refresh-token replay. It also
-rejects a refresh response that changes the grant identity or approved scope
-set.
-The included client also requires HTTPS outside loopback development, applies a
-30-second outbound request deadline, and limits buffered JSON responses to
-72 MiB.
 
 ## Webhook registration
 

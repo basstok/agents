@@ -1,13 +1,12 @@
-# Connection setup and operation
+# Connection setup
 
-The normal path is `npm run connect -- https://community.example`, then start
-your Agent. This page covers the explicit prerequisites and the protocol
-details handled by the shared helpers.
+Connect once, then run your Agent. Use this page for registration, custom
+permissions, hosting, and reconnecting.
 
 ## Register an application
 
-An Organization Manager registers an application through the public API using
-a human Member session. For Welcome guide:
+An Organization Manager registers your application through the public API.
+For Welcome guide:
 
 ```http
 PUT /api/v1/applications/welcome-guide
@@ -21,19 +20,11 @@ Content-Type: application/json
 }
 ```
 
-Use your application's name and only the scopes it needs. Application
-registration is a Manager action, not an authority the connection helper can
-give itself. Never put the Manager session in the Agent's environment or code.
-The Agent runs with the separate, bounded OAuth grant approved by its
-responsible Member.
+Choose your application's name and only the permissions it needs. Use the
+Manager session for registration only; never put it in the Agent's code or
+environment. The Agent gets its own grant when a responsible Member approves it.
 
-The callback URI must exactly match registration. The helper listens only on
-`127.0.0.1`; use a browser on the same computer. If connecting on a remote host,
-forward that callback port over your authenticated remote connection first, or
-run connection setup on the host with your browser. Keep credentials private
-when moving a stopped Agent to another host.
-
-## Connect a supplied Agent
+## Connect
 
 ```sh
 npm run connect -- https://community.example \
@@ -42,78 +33,54 @@ npm run connect -- https://community.example \
   --webhook-url https://agent.example/webhooks/basstok
 ```
 
-`--agent` selects the supplied capability's scopes and event. It does not change
-Basstok or install code remotely. Welcome guide is the initial default.
+Omit `--client-id` and `--webhook-url` to enter them when prompted.
+`--agent` chooses a [supplied Agent's permissions and event](official-agents.md#run-your-own-copy).
+Welcome guide is the initial default.
 
-| Agent name | Event | Requested scopes |
-|---|---|---|
-| `welcome-guide` | `member.created` | `member:read chat:write` |
-| `help-desk` | `content.changed` | `content:read chat:write` |
-| `quick-polls` | `content.changed` | `content:read content:write` |
-| `discussion-closeout` | `content.changed` | `content:read content:write moderation:write` |
-| `community-favorites` | `content.changed` | `content:read moderation:write` |
+For your own Agent, use `--name "My Agent"`, `--scopes "content:read moderation:write"`,
+and `--event content.changed`. Request the read scope corresponding to your event.
 
-For your own Agent, specify `--scopes "content:read moderation:write"` and
-`--event content.changed` instead; `--name "My Agent"` sets its display name.
-The selected event must have its corresponding
-read scope. Run `node dist/tools/cli.js --help` for all options, including the
-callback and listener ports. After `npm link`, the same help is available as
-`basstok-agent --help`.
+Open the printed link in a browser and approve in Basstok. To use the shorter
+command name, run `npm link` after building, then `basstok-agent connect`.
+This links your local checkout, not a published npm package.
 
 ## Select Content resources
 
 Content scopes alone grant no Content access. The responsible Member must
-select ordinary Labels on the new grant using
-[`PUT /api/v1/application-grants/{grantId}/resources`](rest-api.md#select-resources).
-Use the grant ID printed by the connection command. This is a
-human Member-session operation, never an Agent-token operation.
+[select ordinary Labels on the grant](rest-api.md#select-resources), using the
+grant ID printed by `connect`. That operation uses the human Member's session,
+not the Agent's token.
 
-For a supplied Content Agent, set its matching Label ID in `.env.local` as
-described in [Runnable Agents](https://github.com/basstok/agents/tree/main/agents).
-That value expresses the capability's intent. It cannot grant access.
+For a supplied Content Agent, also set its Label ID in `.env.local` as described
+in [Runnable Agents](https://github.com/basstok/agents/tree/main/agents).
+The Label in your code selects what to act on; it cannot grant permission.
 
-## What the helpers own
+## Hosting and ports
 
-The connection command generates fresh PKCE S256 and state values, presents the
-Basstok authorization link, validates callback state and issuer, exchanges the
-code, registers a signed webhook, and saves the resulting credentials. The
-requested and approved scope sets must match. Failed setup attempts revoke the
-new grant; an unconfirmed revocation is reported as an error.
+Your public HTTPS URL must forward `/webhooks/basstok` to the Agent's listener,
+which uses port 3000 by default. For development, use an HTTPS forwarding tool
+of your choice. [Webhook destination requirements](rest-api.md#webhook-registration) still apply.
 
-The running `serveAgent` helper owns:
+The authorization callback uses `http://127.0.0.1:3001/callback` and must exactly
+match your application's registered redirect. Use a browser on that computer.
+For a remote host, forward the callback port over your authenticated remote
+connection first.
 
-- early, single-flight refresh and atomic persistence of each rotated token pair;
-- a bounded HTTP listener with `/healthz` and `/webhooks/basstok`;
-- verification of the exact signed webhook bytes and reference metadata;
-- active and recent delivery deduplication, with same-resource serialization;
-- current authorized REST reads before invoking your callback;
-- bounded retries of replay-safe REST requests.
+Use `--port` and `--callback-port` to change ports. Run
+`node dist/tools/cli.js --help` for all options.
 
-Deduplication is bounded and in memory, not an exactly-once promise. Keep create
-keys stable and use current-state checks, as the supplied Agents do. If your
-Agent performs a non-idempotent action outside Basstok, persist its receipt in
-your own operational store.
+Run your Agent under a process supervisor. `/healthz` reports listener liveness,
+not successful automation or current authorization.
 
 ## Credentials and reconnecting
 
-The default files are `.basstok-agent.json` (connection choices) and
-`.basstok-agent.json.credentials` (OAuth credentials and webhook secret). Both
-are owner-only, local Agent operational files, not community data. Keep them,
-their temporary files, and any copies out of Git and logs. To choose another
-location, set `BASSTOK_CONNECTION_FILE` consistently for connection and serving;
-the credential filename is that path plus `.credentials`.
+Keep one directory and running process per connection. The owner-only files
+`.basstok-agent.json` and `.basstok-agent.json.credentials` are ignored by Git.
+Do not share, log, or hand-edit them. To choose another location, set
+`BASSTOK_CONNECTION_FILE` when connecting and running; the credentials use that
+path plus `.credentials`.
 
-One process may own a credential file at a time. The helper verifies owner-only
-POSIX permissions and rejects symbolic links and a different file owner. The
-bundled file store does not run on Windows, where Node.js cannot verify an
-owner-only ACL. The REST API is platform-independent; a Windows implementation
-needs an equivalent secure credential store.
-
-Before attempting a single-use refresh, the helper durably removes the old
-replayable credentials. A successful refresh saves the new pair before using
-it. A refresh cannot change the grant identity or approved scopes. An
-interrupted or ambiguous refresh requires reconnecting, not replaying the old
-refresh token:
+To reconnect after revocation or an interrupted credential refresh:
 
 ```sh
 # Stop the Agent first.
@@ -121,31 +88,42 @@ npm run connect
 # Approve in Basstok, then restart your Agent.
 ```
 
-The command reuses the application ID as the stable webhook ID. For the same
-responsible Member, a successful registration moves that subscription to the
-new grant, rotates its secret, and revokes the previous grant. An exact retry
-recovers the committed secret. Another Member or application cannot take over
-the subscription. Select Content Labels again on the new grant when needed.
+Reuse the same application ID. The same responsible Member can move its webhook
+to the fresh grant; the previous grant is revoked and the signing secret rotates.
+Select Content Labels again on the new grant when needed.
 
-## Retries and service operation
+The supplied credential store requires Linux, macOS, or another POSIX host.
+A Windows implementation needs an equivalent secure credential store.
+
+<details>
+<summary>Security and retry details</summary>
+
+Connection uses authorization code flow with PKCE S256, fresh state, and an
+exact issuer check. The requested and approved scopes must match. Failed setup
+attempts revoke the new grant; an unconfirmed revocation is reported.
+
+Refresh tokens are single-use. Before refresh, old replayable credentials are
+removed durably; a successful rotation saves the new pair before use. An
+ambiguous refresh requires reconnecting, never replaying the old token. Grant
+identity and scopes cannot change during refresh. Files reject symbolic links,
+a different owner, or overly broad permissions; concurrent use is rejected.
+
+Deliveries are signature-verified before parsing, checked against their reference
+metadata, and deduplicated while active and recently completed. Changes for the
+same resource run serially. Each callback receives a current authorized REST
+read. Recent deduplication is in memory; keep mutations safe across restarts.
 
 REST requests have a 30-second budget and at most three attempts. Replay-safe
-GET, PUT and DELETE requests, and POST creates carrying an `Idempotency-Key`,
-can retry transient transport failures or retryable conflict, throttling, and
-server responses. Backoff includes jitter and respects `Retry-After`. A delay
-longer than the remaining budget is returned to the caller, not shortened.
-Authentication/authorization denials and typed non-retryable conflicts are not
-retried. One-use OAuth exchanges and refreshes are never automatically replayed.
-Authenticated requests refuse redirects.
+GET, PUT and DELETE requests, and POST creates with an `Idempotency-Key`, can
+retry transient transport failures or retryable conflicts, throttling, and
+server failures. Backoff includes jitter and respects `Retry-After`. Delays
+beyond the budget are returned to the caller, not shortened. Denials and typed
+non-retryable conflicts are not retried. One-use OAuth operations are never
+replayed automatically. Authenticated requests refuse redirects.
 
-The listener admits at most 16 connections and two distinct active deliveries;
-request bodies are limited to 64 KiB with a 15-second read deadline. An admitted
-handler may finish after that read deadline. REST JSON responses are bounded at
-72 MiB and buffered Assets at 8 MiB; use bounded Range requests for larger
-Assets. Do not turn a handler into an unbounded scan.
+The listener allows 16 connections and two active deliveries. Bodies are limited
+to 64 KiB with a 15-second read deadline; admitted handlers may finish later.
+JSON responses are bounded at 72 MiB and buffered Assets at 8 MiB. Use bounded
+Range requests for larger Assets and avoid unbounded scans in handlers.
 
-Run the Agent under an ordinary process supervisor, expose its webhook through
-HTTPS, and monitor `/healthz`. That endpoint reports listener liveness, not a
-promise of current authorization or successful automation. Basstok remains
-usable when an external Agent is stopped. Webhooks are change signals, not a
-complete history; recovery should use current authorized REST state.
+</details>

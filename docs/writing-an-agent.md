@@ -1,13 +1,12 @@
 # Writing an Agent
 
-Start with one customer capability. The helpers remove connection and delivery
-ceremony; your program still makes ordinary HTTPS/JSON calls to Basstok.
+Choose one useful task for your Agent. Connect to your community, then write
+an event handler.
 
 ## Write the useful behavior
 
-Community favorites is a small product rule: feature selected Content after
-five reactions. After [connecting](connecting.md) with `content:read` and
-`moderation:write`, its handler is:
+For example, feature selected Content after it receives five reactions.
+[Connect](connecting.md) with `content:read` and `moderation:write`, then add:
 
 ```ts
 import { requiredEnvironment } from "../src/environment.js";
@@ -41,10 +40,8 @@ you can run or adapt.
 | `onMemberCreated(member, api)` | `member.created` | `member:read` |
 | `onChatChanged(chat, actorId, api)` | `chat.changed` | `chat:read` |
 
-The connection command registers the selected event. `serveAgent` verifies and
-deduplicates the signed delivery, then fetches the referenced resource with
-current authorization before calling your handler. The webhook itself contains
-no Content or Message body, Member description, or attachment bytes.
+Choose the event your Agent should respond to when connecting. Your handler
+receives the current resource, limited to what your grant may read.
 
 Request only the additional write scopes your handler needs. Community
 favorites does not need Content creation, Member, or Chat access. Every grant
@@ -59,8 +56,8 @@ participant's current Chat access and admission boundary.
 
 ## Keep repeated work safe
 
-The client handles bounded retries. Your capability must still identify the
-same logical operation across repeated events and restarts:
+Make each action safe to repeat. The same change may be delivered more than
+once, including after a restart:
 
 - use current-state checks before task mutations;
 - use `deterministicId` for Content, Comment, and Member create routes that
@@ -76,30 +73,23 @@ shows a larger ordered operation: commit an exact recap Comment before pausing
 replies, then recover from an ambiguous response without replacing someone
 else's work.
 
-The delivery helper remembers active and recent deliveries, not all historical
-events. Stable mutations make a replay after restart safe. An external email,
-payment, or other non-idempotent side effect needs its own durable receipt.
+If your Agent sends an external email, makes a payment, or performs another
+action that cannot safely be repeated, keep a durable receipt for that action.
 
 ## Respect changes in access
 
-If the current-state read returns `403` or `404`, the helper settles the event
-without invoking the handler. If authority or the target changes during the
-handler, a non-retryable REST rejection also settles the event. Retryable
-conflicts, throttling, and server failures that exhaust client retries leave
-the delivery unsettled for normal webhook retry.
+Permissions can change while your Agent is running. Do not assume a resource
+will remain readable or writable after an earlier request succeeded.
 
-Do not catch every error and pretend the action succeeded. The API exposes
-HTTP status and a typed error with `code`, `message`, and `retryable`. A `401`
-requires checking or reconnecting the grant, not asking for more scopes. The
-helper already refreshes expiring credentials before requests; it does not
-automatically reauthorize revoked access.
+Let retryable failures propagate so the delivery can be retried. Catch an error
+only when your Agent can handle it meaningfully. Use its HTTP status, `code`,
+and `retryable` value to decide what to do; a `401` calls for checking or
+reconnecting the grant, not requesting more permissions.
 
 ## Go deeper when needed
 
-- [Connection setup and operation](connecting.md): registration, selected
+- [Connection setup](connecting.md): registration, selected
   resources, protected credentials, refresh, retries, and hosting.
 - [REST API](rest-api.md): exact requests, responses, OAuth, signing, and events.
-- [`src/`](https://github.com/basstok/agents/tree/main/src): small shared protocol
-  helpers using Node.js facilities and standard `fetch`, with no runtime
-  dependencies. Use them directly or implement the public contract in another
-  language; there is no required Basstok SDK or runtime.
+- [Runnable Agents](https://github.com/basstok/agents/tree/main/agents): choose
+  an existing capability to run or adapt.

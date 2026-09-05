@@ -1,18 +1,12 @@
 # Basstok Agents
 
-A Basstok Agent is a small external program that adds an authorized community
-capability through the Basstok REST API.
+A Basstok Agent is an external program that does something useful for a
+community: welcome Members, run polls, handle help requests, or feature good
+discussions. Agents connect through the Basstok REST API with explicit permission.
 
-```text
-Agent <--- HTTPS / JSON ---> Basstok
-```
+## A useful Agent
 
-The Agent protocol works anywhere with ordinary HTTPS access. Agents use OAuth
-grants, receive signed webhook references, re-read current authorized
-resources, and make normal REST mutations. They have no privileged access to
-Basstok.
-
-## A complete useful Agent
+Feature selected Content once it receives five reactions:
 
 ```ts
 import { requiredEnvironment } from "./src/environment.js";
@@ -32,24 +26,17 @@ await serveAgent({
 });
 ```
 
-The shared helper keeps credential rotation, the bounded listener, signature
-verification, delivery deduplication, REST dereference, and bounded retries out
-of the capability code. It is compact reference code over the documented HTTPS, OAuth, JSON, and
-webhook contracts, not a required SDK or proprietary runtime.
-
 ## Included Agents
 
-| Agent | Capability | Minimum scopes |
-|---|---|---|
-| [Welcome guide](agents/welcome-guide.ts) | Welcomes each new Member created outside Agent execution in a direct Chat | `member:read chat:write` |
-| [Help desk](agents/help-desk.ts) | Opens a private follow-up for labeled help requests | `content:read chat:write` |
-| [Quick polls](agents/quick-polls.ts) | Turns two to four Markdown choices into a reaction guide | `content:read content:write` |
-| [Discussion closeout](agents/discussion-closeout.ts) | Closes an opted-in discussion at 20 visible Comments with a bounded recap | `content:read content:write moderation:write` |
-| [Community favorites](agents/community-favorites.ts) | Features selected Content after five reactions | `content:read moderation:write` |
+| Agent | What it does |
+|---|---|
+| [Welcome guide](agents/welcome-guide.ts) | Sends new Members a direct welcome |
+| [Help desk](agents/help-desk.ts) | Opens a private follow-up for labeled help requests |
+| [Quick polls](agents/quick-polls.ts) | Turns a short choice list into a reaction guide |
+| [Discussion closeout](agents/discussion-closeout.ts) | Adds a recap and pauses replies after 20 visible Comments |
+| [Community favorites](agents/community-favorites.ts) | Features selected Content after five reactions |
 
-Each file is runnable and intentionally keeps the customer capability near the
-top. The Agents use stable create identities and current resource state so
-duplicate webhook delivery and safe retries converge.
+Run one as it is, or adapt it. [Behavior and permissions](docs/official-agents.md).
 
 ## Start here
 
@@ -62,39 +49,24 @@ npm run connect -- https://community.example
 npm start
 ```
 
-`connect` prompts for the application ID and webhook URL, handles browser consent
-and the local callback, and saves owner-only credentials. Welcome guide is the
-default; `--agent community-favorites` selects another supplied capability.
-There are no tokens or signing secrets to paste into your program. After
-`npm link`, the command is also available as `basstok-agent connect`.
+Enter your application ID and webhook URL, approve in Basstok, then start.
+Welcome guide is the default. Use Node.js 24+ on Linux or macOS; see
+[Getting started](docs/getting-started.md) for the one-time registration.
 
 - [Getting started](docs/getting-started.md)
 - [Writing an Agent](docs/writing-an-agent.md)
-- [Connection setup and operation](docs/connecting.md)
 - [Official Agents](docs/official-agents.md)
-- [Agent REST API](docs/rest-api.md)
+- [REST API](docs/rest-api.md)
 - [FAQ](docs/faq.md)
 
-```sh
-npm run check
-```
+Run `npm run check` to build, test, and check documentation links. Other languages
+can use the same REST API; each community serves OpenAPI at `/openapi.json`.
 
-Use `npm start` for Welcome guide or one of the `start:*` scripts documented in
-[`agents/README.md`](agents/README.md). Each Basstok community serves its
-complete OpenAPI document at `/openapi.json`.
+## Permissions
 
-The included Node.js programs run on a POSIX host, such as Linux or macOS.
-Their shared credential helper requires owner-only file permissions and fails
-closed on Windows. The Basstok REST API itself has no such platform restriction.
-
-## Authorization
-
-Every Agent grant has exactly one responsible human Member. Effective authority
-is always the intersection of the granted scopes, that Member's current
-authority, and ordinary resource authorization. Content access is also limited
-to the ordinary Labels selected for the grant. Chat access is limited to a
-participating Member in that exact Chat. Revocation affects subsequent requests
-and webhook delivery.
+Agents have no access by default. Each grant belongs to one responsible Member
+and cannot exceed that Member's authority. Content requires selected Labels;
+Chat access requires participation. Revoking the grant stops future access.
 
 ## License
 
