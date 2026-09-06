@@ -73,5 +73,5 @@ maintained by their developers. Both use the same public API and permissions.
 
 ## Where is the API reference?
 
-Read the [REST API guide](rest-api.md). Your community also serves its complete
+Read the [Basstok REST API](https://github.com/basstok/api). Your community also serves its complete
 OpenAPI document at `/openapi.json`.

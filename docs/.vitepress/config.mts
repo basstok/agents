@@ -13,7 +13,7 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/getting-started" },
       { text: "Official Agents", link: "/official-agents" },
-      { text: "REST API", link: "/rest-api" },
+      { text: "REST API", link: "https://github.com/basstok/api" },
       { text: "FAQ", link: "/faq" },
       { text: "Basstok", link: "https://basstok.com/" },
     ],
@@ -26,7 +26,7 @@ export default defineConfig({
           { text: "Writing an Agent", link: "/writing-an-agent" },
           { text: "Connection setup", link: "/connecting" },
           { text: "Official Agents", link: "/official-agents" },
-          { text: "Agent REST API", link: "/rest-api" },
+          { text: "REST API", link: "https://github.com/basstok/api" },
           { text: "FAQ", link: "/faq" },
         ],
       },

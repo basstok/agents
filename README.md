@@ -107,9 +107,10 @@ await serveAgent({
 [write your own Agent](docs/writing-an-agent.md). Use TypeScript or any language
 that can make ordinary HTTP requests.
 
-Connection details and the [REST API reference](https://agents.basstok.com/rest-api)
-live at [agents.basstok.com](https://agents.basstok.com/). Run `npm run check`
-to build, test, and check documentation links.
+The [Agent guide](https://agents.basstok.com/) covers connection and hosting.
+The shared [Basstok REST API](https://github.com/basstok/api) has its own
+reference and OpenAPI contract. Run `npm run check` to build, test, and check
+documentation links.
 
 ## License
 

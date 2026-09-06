@@ -90,6 +90,6 @@ reconnecting the grant, not requesting more permissions.
 
 - [Connection setup](connecting.md): registration, selected
   resources, protected credentials, refresh, retries, and hosting.
-- [REST API](rest-api.md): exact requests, responses, OAuth, signing, and events.
+- [REST API](https://github.com/basstok/api): exact requests, responses, OAuth, signing, and events.
 - [Choose another Agent](getting-started.md#choose-another-agent): choose
   an existing capability to run or adapt.

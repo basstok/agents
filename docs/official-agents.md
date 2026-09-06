@@ -76,7 +76,7 @@ Uninstall an Agent on the same page to stop future actions and event delivery.
 Uninstalling does not undo work already completed. Your community remains
 usable if an Agent is stopped or unavailable.
 
-Client developers can use the [Agent management endpoints](rest-api.md#manage-official-agents).
+Client developers can use the [Agent management endpoints](https://github.com/basstok/api/blob/main/reference.md#manage-official-agents).
 These require a Manager's session, not an Agent token.
 
 ## Run your own copy

@@ -47,7 +47,7 @@ This links your local checkout, not a published npm package.
 ## Select Content resources
 
 Content scopes alone grant no Content access. The responsible Member must
-[select ordinary Labels on the grant](rest-api.md#select-resources), using the
+[select ordinary Labels on the grant](https://github.com/basstok/api/blob/main/reference.md#select-resources), using the
 grant ID printed by `connect`. That operation uses the human Member's session,
 not the Agent's token.
 
@@ -59,7 +59,7 @@ The Label in your code selects what to act on; it cannot grant permission.
 
 Your public HTTPS URL must forward `/webhooks/basstok` to the Agent's listener,
 which uses port 3000 by default. For development, use an HTTPS forwarding tool
-of your choice. [Webhook destination requirements](rest-api.md#webhook-registration) still apply.
+of your choice. [Webhook destination requirements](https://github.com/basstok/api/blob/main/reference.md#webhook-registration) still apply.
 
 The authorization callback uses `http://127.0.0.1:3001/callback` and must exactly
 match your application's registered redirect. Use a browser on that computer.
