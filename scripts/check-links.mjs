@@ -13,7 +13,11 @@ const failures = [];
 
 for (const file of files) {
   const markdown = readFileSync(file, "utf8");
-  for (const match of markdown.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
+  const targets = [
+    ...markdown.matchAll(/\[[^\]]*\]\(([^)]+)\)/g),
+    ...markdown.matchAll(/\b(?:href|src)=["']([^"']+)["']/g),
+  ];
+  for (const match of targets) {
     const target = match[1]?.trim();
     if (target === undefined || /^(?:https?:|mailto:|#)/.test(target)) continue;
     const clean = target.split("#", 1)[0]?.split("?", 1)[0];

@@ -36,7 +36,9 @@ await serveAgent({
 | [Discussion closeout](agents/discussion-closeout.ts) | Adds a recap and pauses replies after 20 visible Comments |
 | [Community favorites](agents/community-favorites.ts) | Features selected Content after five reactions |
 
-Run one as it is, or adapt it. [Behavior and permissions](docs/official-agents.md).
+Run one as it is, or adapt it. [See each Agent’s setup and result](docs/official-agents.md).
+
+<a href="docs/official-agents.md#quick-polls"><img src="docs/images/quick-polls-voting.png" alt="Quick polls adds a voting guide in Basstok for iPhone" width="260" height="565"></a>
 
 ## Start here
 

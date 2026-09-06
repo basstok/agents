@@ -525,6 +525,41 @@ them.
 Authorization is applied before list results, pagination, direct object reads,
 Asset reads, foreground events, and webhook delivery become observable.
 
+## Manage official Agents
+
+These operations are for a human Manager's client. Agent tokens cannot use
+them, and an Agent must never receive the Manager's session.
+
+`GET /api/v1/agents` returns `available` and an `items` array. Each item has
+`id`, `name`, `description`, `enabled`, `scope`, `permissions`, and
+`content_label_id`; `content_label_name` is present when Content is selected
+by a Label. Show the description, permissions and Content selection before
+asking the Manager to enable an Agent.
+
+Send the desired state to `PUT /api/v1/agents/{agentId}` with the Manager's
+bearer session. Echo the exact `scope` and `content_label_id` from the catalog:
+
+```http
+PUT /api/v1/agents/welcome-guide
+Authorization: Bearer <manager-session>
+Content-Type: application/json
+Accept: application/json
+
+{"enabled":true,"scope":"member:read chat:write","content_label_id":""}
+```
+
+Success returns `204`. Set `enabled` to `false` to disable. Exact repeats are
+safe. After a failed or uncertain response, refresh the catalog before retrying.
+When `available` is `false`, connected Agents can still be disabled.
+
+`401` means the session is invalid or revoked; `403` requires current human
+Manager authority. Unknown Agents return `404`. Changed permissions or Content
+selection return `409`: fetch the catalog and obtain fresh consent. Invalid
+requests return `400`; temporary unavailability returns `503`.
+
+Enabling creates ordinary revocable delegation, not additional Member
+authority. Disabling stops future automation without undoing completed work.
+
 ## Errors
 
 API errors use this envelope:

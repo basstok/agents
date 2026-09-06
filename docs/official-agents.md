@@ -9,11 +9,21 @@ Send new Members a direct welcome from the responsible Member. Welcome guide
 creates or reuses their direct Chat and sends one welcome Message. It skips
 the responsible Member and Members created by Agents.
 
+<div class="agent-photos">
+  <img src="./images/welcome-guide-message.png" alt="A new Member receives a welcome message" width="240" height="522" loading="lazy">
+  <img src="./images/welcome-guide-permissions.png" alt="Review Welcome guide’s access on iPhone" width="240" height="522" loading="lazy">
+</div>
+
 ## Help desk
 
 Add the **Help request** Label to Content to start a private follow-up with its
 author. Help desk opens or reuses a direct Chat and sends one acknowledgment
 for that request. Requests authored by the responsible Member are skipped.
+
+<div class="agent-photos">
+  <img src="./images/help-desk-reply.png" alt="A help request receives a private follow-up" width="240" height="522" loading="lazy">
+  <img src="./images/help-desk-permissions.png" alt="Choose Help desk for Content labeled Help request" width="240" height="522" loading="lazy">
+</div>
 
 ## Quick polls
 
@@ -24,6 +34,11 @@ choice: Like, Love, Celebrate, then Insightful.
 Use only the choice list in the body. The first guide stays unchanged if you
 edit the choices later.
 
+<div class="agent-photos">
+  <img src="./images/quick-polls-voting.png" alt="A voting guide appears below the choices" width="240" height="522" loading="lazy">
+  <img src="./images/quick-polls-permissions.png" alt="Review Quick polls before enabling it" width="240" height="522" loading="lazy">
+</div>
+
 ## Discussion closeout
 
 Add the **20-comment discussion** Label to give a discussion a clear stopping
@@ -31,21 +46,35 @@ point. After 20 visible Comments, the Agent adds a participation recap and
 pauses replies. Hidden or withheld Comments and their reply subtrees do not
 count. It does not replace an existing edited recap.
 
+<div class="agent-photos">
+  <img src="./images/discussion-closeout-recap.png" alt="A discussion receives a participation recap and replies are paused" width="240" height="522" loading="lazy">
+  <img src="./images/discussion-closeout-permissions.png" alt="Review Discussion closeout and its selected Content" width="240" height="522" loading="lazy">
+</div>
+
 ## Community favorites
 
 Add the **Favorites eligible** Label to Content you want the community to help
 surface. Once it receives five reactions, the Agent features it. It stays
 featured if the reaction count later falls.
 
+<div class="agent-photos">
+  <img src="./images/community-favorites-featured.png" alt="A post is featured after receiving five reactions" width="240" height="522" loading="lazy">
+  <img src="./images/community-favorites-permissions.png" alt="Review Community favorites before enabling it" width="240" height="522" loading="lazy">
+</div>
+
 ## Enable or disable
 
-As a Manager, open **Account → Administration → Agents**, choose an Agent,
-and approve its requested permissions. Content Agents use the corresponding
-Label to select the Content they can access.
+As a Manager, open **Account → Agents** on iPhone, or
+**Account → Administration → Agents** on the web. Choose an Agent and review
+its permissions before enabling it. Content Agents use the corresponding Label
+to select the Content they can access.
 
 Disable an Agent on the same page to stop future actions and event delivery.
 Disabling it does not undo work already completed. Your community remains
 usable if an Agent is stopped or unavailable.
+
+Client developers can use the [Agent management endpoints](rest-api.md#manage-official-agents).
+These require a Manager's session, not an Agent token.
 
 ## Run your own copy
 
