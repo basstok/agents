@@ -32,7 +32,7 @@ for that request. Requests authored by the responsible Member are skipped.
 
 Publish two to four Markdown bullet choices and add the **Quick poll** Label.
 Quick polls adds a Comment explaining which Content reaction represents each
-choice: Like, Love, Celebrate, then Insightful.
+choice: 👍, ❤️, 🎉, then 💡.
 
 Use only the choice list in the body. The first guide stays unchanged if you
 edit the choices later.

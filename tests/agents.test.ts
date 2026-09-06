@@ -165,8 +165,8 @@ test("Quick polls publish one deterministic reaction guide and then freeze it", 
   assert.match(writes[0]?.url ?? "", /\/comment-creations\//);
   assert.match(writes[0]?.url ?? "", uuidAtEnd);
   assert.deepEqual(writes[0]?.body, {
-    body: "**Vote by reacting to this Content:**\n\n" +
-      "- **Like** — Garden\n- **Love** — Workshop\n- **Celebrate** — Library",
+    body: "**Vote with a reaction:**\n\n" +
+      "- 👍 — Garden\n- ❤️ — Workshop\n- 🎉 — Library",
   });
 });
 

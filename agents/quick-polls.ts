@@ -1,9 +1,9 @@
-import type { BasstokClient, Content, ReactionKind } from "../src/basstok.js";
+import type { BasstokClient, Content } from "../src/basstok.js";
 import { isMainModule, requiredEnvironment } from "../src/environment.js";
 import { deterministicId } from "../src/ids.js";
 import { serveAgent } from "../src/webhooks.js";
 
-const reactions: readonly ReactionKind[] = ["Like", "Love", "Celebrate", "Insightful"];
+const reactions = ["👍", "❤️", "🎉", "💡"] as const;
 
 export async function publishPollGuide(
   content: Content,
@@ -20,10 +20,10 @@ export async function publishPollGuide(
   const choices = parsePollChoices(content.body);
   if (choices === undefined) return;
   const lines = choices.map((choice, index) =>
-    `- **${reactions[index]}** — ${escapeMarkdown(choice)}`,
+    `- ${reactions[index]} — ${escapeMarkdown(choice)}`,
   );
   await api.createComment(content.id, guideId, {
-    body: "**Vote by reacting to this Content:**\n\n" + lines.join("\n"),
+    body: "**Vote with a reaction:**\n\n" + lines.join("\n"),
   });
 }
 
