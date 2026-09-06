@@ -52,7 +52,7 @@ grant ID printed by `connect`. That operation uses the human Member's session,
 not the Agent's token.
 
 For a supplied Content Agent, also set its Label ID in `.env.local` as described
-in [Runnable Agents](https://github.com/basstok/agents/tree/main/agents).
+in [Choose another Agent](getting-started.md#choose-another-agent).
 The Label in your code selects what to act on; it cannot grant permission.
 
 ## Hosting and ports

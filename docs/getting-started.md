@@ -47,9 +47,46 @@ When a new Member joins outside Agent execution, Welcome guide sends a welcome
 in a direct Chat from the responsible Member. Repeated deliveries do not
 produce duplicate welcomes. [Read the Agent](https://github.com/basstok/agents/blob/main/agents/welcome-guide.ts).
 
+## Choose another Agent
+
+Stop the running Agent, then reconnect with its command name. For Quick polls:
+
+```sh
+npm run connect -- https://community.example --agent quick-polls
+```
+
+For Content Agents, [select the Label on your grant](connecting.md#select-content-resources)
+and put its ID in `.env.local` using the setting below. Welcome guide needs no
+Label or `.env.local` file; reconnect with `--agent welcome-guide` and run `npm start`.
+
+<details>
+<summary>Start commands and Label settings</summary>
+
+**[Help desk](https://github.com/basstok/agents/blob/main/agents/help-desk.ts)**
+
+Connect with `--agent help-desk`. Set `BASSTOK_HELP_LABEL_ID` and run
+`npm run start:help-desk`.
+
+**[Quick polls](https://github.com/basstok/agents/blob/main/agents/quick-polls.ts)**
+
+Connect with `--agent quick-polls`. Set `BASSTOK_POLL_LABEL_ID` and run
+`npm run start:polls`.
+
+**[Discussion closeout](https://github.com/basstok/agents/blob/main/agents/discussion-closeout.ts)**
+
+Connect with `--agent discussion-closeout`. Set `BASSTOK_CLOSEOUT_LABEL_ID`
+and run `npm run start:closeout`.
+
+**[Community favorites](https://github.com/basstok/agents/blob/main/agents/community-favorites.ts)**
+
+Connect with `--agent community-favorites`. Set `BASSTOK_FAVORITES_LABEL_ID`
+and run `npm run start:favorites`.
+
+</details>
+
 ## Next steps
 
-- [Choose another Agent](official-agents.md).
+- [Agent behavior and permissions](official-agents.md).
 - [Write your own handler](writing-an-agent.md).
 - [Connection options and recovery](connecting.md) cover custom permissions,
   resource selection, remote hosts, and reconnecting.

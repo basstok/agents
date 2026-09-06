@@ -92,5 +92,5 @@ These require a Manager's session, not an Agent token.
 | Community favorites | `community-favorites` | `content:read moderation:write` |
 
 For Content Agents, [select the Label on the grant](connecting.md#select-content-resources)
-and set its ID as described in [Runnable Agents](https://github.com/basstok/agents/tree/main/agents).
+and set its ID as described in [Choose another Agent](getting-started.md#choose-another-agent).
 Official and independently operated Agents use the same public API and permission rules.

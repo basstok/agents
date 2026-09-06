@@ -91,5 +91,5 @@ reconnecting the grant, not requesting more permissions.
 - [Connection setup](connecting.md): registration, selected
   resources, protected credentials, refresh, retries, and hosting.
 - [REST API](rest-api.md): exact requests, responses, OAuth, signing, and events.
-- [Runnable Agents](https://github.com/basstok/agents/tree/main/agents): choose
+- [Choose another Agent](getting-started.md#choose-another-agent): choose
   an existing capability to run or adapt.

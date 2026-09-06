@@ -1,12 +1,89 @@
 # Basstok Agents
 
-A Basstok Agent is an external program that does something useful for a
-community: welcome Members, run polls, handle help requests, or feature good
-discussions. Agents connect through the Basstok REST API with explicit permission.
+Welcome new Members. Run a poll. Bring a good discussion into view.
 
-## A useful Agent
+Five useful Agents for [Basstok](https://basstok.com/), ready to install in your
+community or run yourself. Each is a small external program using the Basstok
+REST API with explicit permission.
 
-Feature selected Content once it receives five reactions:
+[Explore Basstok](https://basstok.com/) · [Run an Agent](docs/getting-started.md) · [Browse the code](agents)
+
+## Welcome guide
+
+Give new Members a personal welcome. Write your message once; Welcome guide
+sends it from you when someone joins, with the Agent clearly identified.
+
+<p>
+  <img src="docs/images/welcome-guide-message.png" alt="A new Member receives Mara’s welcome, sent by Welcome guide" width="240" height="522">
+  <img src="docs/images/welcome-guide-permissions.png" alt="Write a welcome message and review access before installing Welcome guide" width="240" height="522">
+</p>
+
+[Read the code →](agents/welcome-guide.ts)
+
+## Help desk
+
+Keep a help request moving. Add the **Help request** Label to a post and Help
+desk starts a private follow-up with its author.
+
+<p>
+  <img src="docs/images/help-desk-reply.png" alt="A Member receives a private follow-up to their help request" width="240" height="522">
+  <img src="docs/images/help-desk-permissions.png" alt="Help desk installation shows its selected Content and permissions" width="240" height="522">
+</p>
+
+[Read the code →](agents/help-desk.ts)
+
+## Quick polls
+
+Let the community choose. Publish two to four bullet-point choices with the
+**Quick poll** Label. Quick polls adds a guide so Members can vote with reactions.
+
+<p>
+  <img src="docs/images/quick-polls-voting.png" alt="A dinosaur community votes on its next topic using reactions" width="240" height="522">
+  <img src="docs/images/quick-polls-permissions.png" alt="Review Quick polls and the Content it can access before installing" width="240" height="522">
+</p>
+
+[Read the code →](agents/quick-polls.ts)
+
+## Discussion closeout
+
+Give a discussion a clear finish. With the **20-comment discussion** Label,
+the Agent adds a participation recap and pauses replies after 20 visible Comments.
+
+<p>
+  <img src="docs/images/discussion-closeout-recap.png" alt="A completed discussion shows its participation recap and paused replies" width="240" height="522">
+  <img src="docs/images/discussion-closeout-permissions.png" alt="Review Discussion closeout before installing it" width="240" height="522">
+</p>
+
+[Read the code →](agents/discussion-closeout.ts)
+
+## Community favorites
+
+Make good posts easier to find. Add the **Favorites eligible** Label; after
+five reactions, Community favorites features the post.
+
+<p>
+  <img src="docs/images/community-favorites-featured.png" alt="A post becomes featured after the community gives it five reactions" width="240" height="522">
+  <img src="docs/images/community-favorites-permissions.png" alt="Review Community favorites and its selected Content before installing" width="240" height="522">
+</p>
+
+[Read the code →](agents/community-favorites.ts)
+
+## Use them in Basstok
+
+As a Manager, open **Account → Agents** on iPhone or Android, or
+**Account → Administration → Agents** on the web. Choose an Agent, review its
+permissions, and install. Uninstall it from the same place.
+
+Agents have no access by default. They act within the responsible Member’s
+current authority and the resources explicitly granted to them. Uninstalling
+stops future actions; it does not undo work already completed.
+
+The screenshots show Basstok for iPhone. Agents also work with Android and the web.
+
+## Make one your own
+
+The five programs in [agents/](agents) are ready to run or adapt. For example,
+this is Community favorites:
 
 ```ts
 import { requiredEnvironment } from "./src/environment.js";
@@ -26,49 +103,13 @@ await serveAgent({
 });
 ```
 
-## Included Agents
+[Get started](docs/getting-started.md) to connect and run one, or
+[write your own Agent](docs/writing-an-agent.md). Use TypeScript or any language
+that can make ordinary HTTP requests.
 
-| Agent | What it does |
-|---|---|
-| [Welcome guide](agents/welcome-guide.ts) | Sends new Members a direct welcome |
-| [Help desk](agents/help-desk.ts) | Opens a private follow-up for labeled help requests |
-| [Quick polls](agents/quick-polls.ts) | Turns a short choice list into a reaction guide |
-| [Discussion closeout](agents/discussion-closeout.ts) | Adds a recap and pauses replies after 20 visible Comments |
-| [Community favorites](agents/community-favorites.ts) | Features selected Content after five reactions |
-
-Run one as it is, or adapt it. [See each Agent’s setup and result](docs/official-agents.md).
-
-<a href="docs/official-agents.md#quick-polls"><img src="docs/images/quick-polls-voting.png" alt="Quick polls adds a voting guide in Basstok for iPhone" width="260" height="565"></a>
-
-## Start here
-
-With a registered application and an HTTPS webhook URL:
-
-```sh
-npm ci
-npm run build
-npm run connect -- https://community.example
-npm start
-```
-
-Enter your application ID and webhook URL, approve in Basstok, then start.
-Welcome guide is the default. Use Node.js 24+ on Linux or macOS; see
-[Getting started](docs/getting-started.md) for the one-time registration.
-
-- [Getting started](docs/getting-started.md)
-- [Writing an Agent](docs/writing-an-agent.md)
-- [Official Agents](docs/official-agents.md)
-- [REST API](docs/rest-api.md)
-- [FAQ](docs/faq.md)
-
-Run `npm run check` to build, test, and check documentation links. Other languages
-can use the same REST API; each community serves OpenAPI at `/openapi.json`.
-
-## Permissions
-
-Agents have no access by default. Each grant belongs to one responsible Member
-and cannot exceed that Member's authority. Content requires selected Labels;
-Chat access requires participation. Revoking the grant stops future access.
+Connection details and the [REST API reference](https://agents.basstok.com/rest-api)
+live at [agents.basstok.com](https://agents.basstok.com/). Run `npm run check`
+to build, test, and check documentation links.
 
 ## License
 

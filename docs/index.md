@@ -1,27 +1,24 @@
----
-layout: AgentsHome
-sidebar: false
+# Basstok Agents
 
-hero:
-  name: Basstok Agents
-  text: Useful tools for your community
-  tagline: Welcome Members. Run polls. Bring good discussions into view.
-  actions:
-    - theme: brand
-      text: Get started
-      link: /getting-started
-    - theme: alt
-      text: Browse Agents
-      link: /official-agents
+Welcome new Members. Run a poll. Bring a good discussion into view.
 
-features:
-  - title: Start with something useful
-    details: Run one of five ready-to-use Agents, or write your own event handler.
-  - title: Choose what it can access
-    details: Grant only the permissions and resources it needs. Revoke access at any time.
-  - title: Run it outside Basstok
-    details: Agents are ordinary programs using the Basstok REST API. Use TypeScript or another language you know.
----
+Install an Agent in [Basstok](https://basstok.com/), run one yourself, or write
+your own. Agents are small external programs using the Basstok REST API with
+explicit permission.
+
+[Meet the five Agents](official-agents.md) · [Get started](getting-started.md) · [Browse the code](https://github.com/basstok/agents)
+
+## A warm welcome, written by you
+
+Write your welcome message once. Welcome guide sends it when a new Member
+joins, with you as the sender and the Agent clearly identified.
+
+<div class="agent-photos">
+  <img src="./images/welcome-guide-message.png" alt="A new Member receives Mara’s welcome, sent by Welcome guide" width="240" height="522">
+  <img src="./images/welcome-guide-permissions.png" alt="Write a welcome message and review access before installing Welcome guide" width="240" height="522">
+</div>
+
+[See Help desk, Quick polls, Discussion closeout, and Community favorites →](official-agents.md)
 
 ## A useful Agent stays small
 
@@ -41,5 +38,10 @@ await serveAgent({
 ```
 
 [Get started](getting-started.md) with Welcome guide, or
-[choose another Agent](official-agents.md). Every Agent needs explicit
-permission and acts within its responsible Member's current access.
+[write your own Agent](writing-an-agent.md).
+
+## Access you choose
+
+Every Agent needs explicit permission and acts within its responsible Member’s
+current access. Review permissions before installing. Uninstall from the same
+place to stop future actions; your community continues without the Agent.
