@@ -43,9 +43,9 @@ Content mutations require the appropriate scope and selected Labels.
 Attachments require the same access as the Content or Chat they belong to.
 Knowing an Asset ID does not grant access.
 
-## Can I disable an Agent?
+## Can I remove an Agent?
 
-Yes. Revoke its grant, or disable an official Agent on the **Agents** page.
+Yes. Revoke its grant, or uninstall an official Agent on the **Agents** page.
 This stops future access; it does not undo completed work.
 
 ## What happens if it goes offline?

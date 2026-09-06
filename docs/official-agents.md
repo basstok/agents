@@ -1,6 +1,6 @@
 # Official Agents
 
-Five Basstok-maintained Agents you can enable in your community or
+Five Basstok-maintained Agents you can install in your community or
 [run yourself](https://github.com/basstok/agents/tree/main/agents).
 
 ## Welcome guide
@@ -8,6 +8,9 @@ Five Basstok-maintained Agents you can enable in your community or
 Send new Members a direct welcome from the responsible Member. Welcome guide
 creates or reuses their direct Chat and sends one welcome Message. It skips
 the responsible Member and Members created by Agents.
+
+Write your welcome message before installing. New Members receive it from
+you, with Welcome guide identified below the Message.
 
 <div class="agent-photos">
   <img src="./images/welcome-guide-message.png" alt="A new Member receives a welcome message" width="240" height="522" loading="lazy">
@@ -36,7 +39,7 @@ edit the choices later.
 
 <div class="agent-photos">
   <img src="./images/quick-polls-voting.png" alt="A voting guide appears below the choices" width="240" height="522" loading="lazy">
-  <img src="./images/quick-polls-permissions.png" alt="Review Quick polls before enabling it" width="240" height="522" loading="lazy">
+  <img src="./images/quick-polls-permissions.png" alt="Review Quick polls before installing it" width="240" height="522" loading="lazy">
 </div>
 
 ## Discussion closeout
@@ -59,18 +62,18 @@ featured if the reaction count later falls.
 
 <div class="agent-photos">
   <img src="./images/community-favorites-featured.png" alt="A post is featured after receiving five reactions" width="240" height="522" loading="lazy">
-  <img src="./images/community-favorites-permissions.png" alt="Review Community favorites before enabling it" width="240" height="522" loading="lazy">
+  <img src="./images/community-favorites-permissions.png" alt="Review Community favorites before installing it" width="240" height="522" loading="lazy">
 </div>
 
-## Enable or disable
+## Install or uninstall
 
-As a Manager, open **Account → Agents** on iPhone, or
+As a Manager, open **Account → Agents** on iPhone or Android, or
 **Account → Administration → Agents** on the web. Choose an Agent and review
-its permissions before enabling it. Content Agents use the corresponding Label
+its permissions before installing it. Content Agents use the corresponding Label
 to select the Content they can access.
 
-Disable an Agent on the same page to stop future actions and event delivery.
-Disabling it does not undo work already completed. Your community remains
+Uninstall an Agent on the same page to stop future actions and event delivery.
+Uninstalling does not undo work already completed. Your community remains
 usable if an Agent is stopped or unavailable.
 
 Client developers can use the [Agent management endpoints](rest-api.md#manage-official-agents).

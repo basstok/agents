@@ -331,7 +331,7 @@ export class BasstokClient {
 
   async putMember(
     memberId: string,
-    input: { display_name: string; description?: string | null },
+    input: { display_name: string; description?: string | null; avatar?: CanonicalReference | null },
   ): Promise<MemberMutationResult> {
     return this.#request(
       "PUT",
@@ -342,7 +342,7 @@ export class BasstokClient {
 
   async createMember(
     memberId: string,
-    input: { display_name: string; description?: string | null },
+    input: { display_name: string; description?: string | null; avatar?: CanonicalReference | null },
   ): Promise<MemberMutationResult> {
     return this.#request(
       "PUT",
@@ -393,7 +393,7 @@ export class BasstokClient {
   async putContentDraft(
     contentId: string,
     input: {
-      title: string;
+      title?: string;
       body: string;
       labels?: string[];
       author_id?: string;
@@ -427,7 +427,7 @@ export class BasstokClient {
   async putContent(
     contentId: string,
     input: {
-      title: string;
+      title?: string;
       body: string;
       labels?: string[];
       audience?: "members_only" | "supporters_only" | "team_only";

@@ -253,6 +253,14 @@ Chat so the same participation and admission boundary is evaluated.
 
 ## Content operations
 
+A title is optional. Omit `title` or send `""` for a post without an authored
+title; `null` is not valid. Published Content needs text or an attachment.
+Attachment-only creation starts with a draft, then uploads its Asset and
+publishes. Returned Content uses `title: ""` when no title was supplied.
+
+The **Everyone** audience means everyone already allowed into the community.
+A Content audience can narrow community access, never broaden it.
+
 | Request | Scope | Observable result |
 |---|---|---|
 | `GET /api/v1/contents?label_id={labelId}` | `content:read` | Content summaries restricted to selected Labels |
@@ -347,6 +355,11 @@ Creating a persona does not increase the Agent's authority, because every
 later request is still capped by that human's current authority. The description
 is public profile text; do not put credentials or private working context in
 it.
+
+Member creation and updates also accept `avatar: { "id": "asset-id" }` for an
+authorized image Asset owned by the community. Attachments belonging to a post
+or Chat cannot be used as avatars. On an update, omit `avatar` to keep the
+current photo, or send `null` to remove it.
 
 Use the create-only route for deterministic automation: an exact retry is safe,
 while a collision with any different existing Member returns a conflict and
@@ -534,7 +547,9 @@ them, and an Agent must never receive the Manager's session.
 `id`, `name`, `description`, `enabled`, `scope`, `permissions`, and
 `content_label_id`; `content_label_name` is present when Content is selected
 by a Label. Show the description, permissions and Content selection before
-asking the Manager to enable an Agent.
+asking the Manager to install an Agent. Welcome guide also returns
+`welcome_message`, the editable greeting for a new installation or the message
+already installed. It may be absent while the Agent service is unavailable.
 
 Send the desired state to `PUT /api/v1/agents/{agentId}` with the Manager's
 bearer session. Echo the exact `scope` and `content_label_id` from the catalog:
@@ -545,20 +560,26 @@ Authorization: Bearer <manager-session>
 Content-Type: application/json
 Accept: application/json
 
-{"enabled":true,"scope":"member:read chat:write","content_label_id":""}
+{"enabled":true,"scope":"member:read chat:write","content_label_id":"","welcome_message":"Welcome! Reply here if you need a hand getting started."}
 ```
 
-Success returns `204`. Set `enabled` to `false` to disable. Exact repeats are
+Success returns `204`. The wire field `enabled` corresponds to installation:
+set it to `false` to uninstall. Exact repeats are
 safe. After a failed or uncertain response, refresh the catalog before retrying.
-When `available` is `false`, connected Agents can still be disabled.
+When `available` is `false`, installed Agents can still be uninstalled.
+
+Only Welcome guide accepts `welcome_message`. It must contain non-whitespace
+text, fit within 2,048 UTF-8 bytes, and contain no disallowed control characters.
+Omit it to use the default greeting. Changing an already installed greeting
+returns `409`; uninstall and install again with the desired message.
 
 `401` means the session is invalid or revoked; `403` requires current human
 Manager authority. Unknown Agents return `404`. Changed permissions or Content
 selection return `409`: fetch the catalog and obtain fresh consent. Invalid
 requests return `400`; temporary unavailability returns `503`.
 
-Enabling creates ordinary revocable delegation, not additional Member
-authority. Disabling stops future automation without undoing completed work.
+Installing creates ordinary revocable delegation, not additional Member
+authority. Uninstalling stops future automation without undoing completed work.
 
 ## Errors
 

@@ -3,6 +3,24 @@ import test from "node:test";
 
 import { BasstokApiError, BasstokClient } from "../src/basstok.js";
 
+test("titleless posts and explicit avatar changes preserve their JSON meaning", async () => {
+  const bodies: unknown[] = [];
+  const client = new BasstokClient("https://community.example", "token", async (_url, init) => {
+    bodies.push(JSON.parse(String(init?.body)));
+    return Response.json({ id: "resource" });
+  });
+  await client.putContent("post", { body: "A thought worth sharing." });
+  await client.putContentDraft("draft", { body: "" });
+  await client.createMember("member", { display_name: "Avery", avatar: { id: "photo" } });
+  await client.putMember("member", { display_name: "Avery" });
+  await client.putMember("member", { display_name: "Avery", avatar: null });
+  assert.deepEqual(bodies, [
+    { body: "A thought worth sharing." }, { body: "" },
+    { display_name: "Avery", avatar: { id: "photo" } },
+    { display_name: "Avery" }, { display_name: "Avery", avatar: null },
+  ]);
+});
+
 test("BasstokClient sends a bearer-authenticated task mutation", async () => {
   let observedUrl = "";
   let observedAuthorization = "";
