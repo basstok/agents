@@ -14,9 +14,12 @@ Give new Members a personal welcome. Write your message once; Welcome guide
 sends it from you when someone joins, with the Agent clearly identified.
 
 <p>
-  <img src="docs/images/welcome-guide-message.png" alt="A new Member receives Mara’s welcome, sent by Welcome guide" width="240" height="522">
   <img src="docs/images/welcome-guide-permissions.png" alt="Write a welcome message and review access before installing Welcome guide" width="240" height="522">
+  <img src="docs/images/welcome-guide-message.png" alt="A new Member receives Mara’s welcome, sent by Welcome guide" width="240" height="522">
 </p>
+
+Write your greeting → install → new Members receive it. The message field is
+available on iPhone, Android, and the web.
 
 [Read the code →](agents/welcome-guide.ts)
 
@@ -106,6 +109,11 @@ await serveAgent({
 [Get started](docs/getting-started.md) to connect and run one, or
 [write your own Agent](docs/writing-an-agent.md). Use TypeScript or any language
 that can make ordinary HTTP requests.
+
+Running your own copy? Change the welcome text in
+[Welcome guide](agents/welcome-guide.ts), or read your own program’s settings.
+The installation screens shown above belong to Basstok’s official Agents;
+third-party parameters do not automatically create screens in Basstok.
 
 The [Agent guide](https://agents.basstok.com/) covers connection and hosting.
 The shared [Basstok REST API](https://github.com/basstok/api) has its own

@@ -14,8 +14,8 @@ Write your welcome message once. Welcome guide sends it when a new Member
 joins, with you as the sender and the Agent clearly identified.
 
 <div class="agent-photos">
-  <img src="./images/welcome-guide-message.png" alt="A new Member receives Mara’s welcome, sent by Welcome guide" width="240" height="522">
   <img src="./images/welcome-guide-permissions.png" alt="Write a welcome message and review access before installing Welcome guide" width="240" height="522">
+  <img src="./images/welcome-guide-message.png" alt="A new Member receives Mara’s welcome, sent by Welcome guide" width="240" height="522">
 </div>
 
 [See Help desk, Quick polls, Discussion closeout, and Community favorites →](official-agents.md)

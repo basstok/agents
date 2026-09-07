@@ -20,10 +20,10 @@ export async function publishPollGuide(
   const choices = parsePollChoices(content.body);
   if (choices === undefined) return;
   const lines = choices.map((choice, index) =>
-    `- ${reactions[index]} — ${escapeMarkdown(choice)}`,
+    `${reactions[index]} — ${escapeMarkdown(choice)}`,
   );
   await api.createComment(content.id, guideId, {
-    body: "**Vote with a reaction:**\n\n" + lines.join("\n"),
+    body: "**Vote with a reaction:**\n\n" + lines.join("  \n"),
   });
 }
 

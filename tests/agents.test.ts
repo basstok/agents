@@ -166,7 +166,7 @@ test("Quick polls publish one deterministic reaction guide and then freeze it", 
   assert.match(writes[0]?.url ?? "", uuidAtEnd);
   assert.deepEqual(writes[0]?.body, {
     body: "**Vote with a reaction:**\n\n" +
-      "- 👍 — Garden\n- ❤️ — Workshop\n- 🎉 — Library",
+      "👍 — Garden  \n❤️ — Workshop  \n🎉 — Library",
   });
 });
 

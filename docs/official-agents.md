@@ -10,11 +10,11 @@ creates or reuses their direct Chat and sends one welcome Message. It skips
 the responsible Member and Members created by Agents.
 
 Write your welcome message before installing. New Members receive it from
-you, with Welcome guide identified below the Message.
+you, with Welcome guide identified alongside the Message.
 
 <div class="agent-photos">
-  <img src="./images/welcome-guide-message.png" alt="A new Member receives a welcome message" width="240" height="522" loading="lazy">
-  <img src="./images/welcome-guide-permissions.png" alt="Review Welcome guide’s access on iPhone" width="240" height="522" loading="lazy">
+  <img src="./images/welcome-guide-permissions.png" alt="Write the welcome message and install Welcome guide on iPhone" width="240" height="522" loading="lazy">
+  <img src="./images/welcome-guide-message.png" alt="A new Member receives the configured welcome message" width="240" height="522" loading="lazy">
 </div>
 
 ## Help desk
@@ -78,6 +78,21 @@ usable if an Agent is stopped or unavailable.
 
 Client developers can use the [Agent management endpoints](https://github.com/basstok/api/blob/main/reference.md#manage-official-agents).
 These require a Manager's session, not an Agent token.
+
+## What you choose
+
+Welcome guide has a **Welcome message** field on iPhone, Android, and the web.
+Enter your greeting before installing. It supports Markdown and must contain
+text, up to 2,048 UTF-8 bytes. To replace an installed greeting, uninstall and
+install again with the new message. Previously sent Messages stay unchanged.
+
+The other four Agents use the Labels described above; their thresholds and
+actions are fixed. There are no hidden setup fields.
+
+These are screens for the official catalog. If you write a third-party Agent,
+your program owns its inputs and any setup screen; Basstok does not generate
+forms from arbitrary Agent parameters. You can still build a client for the
+published official-Agent management contract.
 
 ## Run your own copy
 
