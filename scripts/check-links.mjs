@@ -4,8 +4,7 @@ import { dirname, extname, join, resolve } from "node:path";
 const root = resolve(import.meta.dirname, "..");
 const files = [
   join(root, "README.md"),
-  join(root, "CONTRIBUTING.md"),
-  join(root, "SECURITY.md"),
+  ...markdownFiles(join(root, ".github")),
   ...markdownFiles(join(root, "agents")),
   ...markdownFiles(join(root, "docs")),
 ];

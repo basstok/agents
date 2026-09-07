@@ -3,9 +3,9 @@ import { createInterface } from "node:readline/promises";
 import { parseArgs } from "node:util";
 import {
   connectAgent, defaultConnectionFile, readConnection, validateConnection,
-} from "../src/connection.js";
-import { parseAgentScopes } from "../src/oauth.js";
-import { normalizeBasstokOrigin } from "../src/origin.js";
+} from "./connection.js";
+import { parseAgentScopes } from "./oauth.js";
+import { normalizeBasstokOrigin } from "./origin.js";
 
 const agents = {
   "welcome-guide": { name: "Welcome guide", event: "member.created", scopes: "member:read chat:write" },

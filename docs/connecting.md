@@ -67,7 +67,7 @@ For a remote host, forward the callback port over your authenticated remote
 connection first.
 
 Use `--port` and `--callback-port` to change ports. Run
-`node dist/tools/cli.js --help` for all options.
+`npm run connect -- --help` for all options.
 
 Run your Agent under a process supervisor. `/healthz` reports listener liveness,
 not successful automation or current authorization.

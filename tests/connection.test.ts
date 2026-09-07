@@ -103,7 +103,7 @@ test("connect and serve run OAuth, registration, rotation and signed delivery th
     let callback: Promise<Response> | undefined;
     let output = "";
     const cli = spawn(process.execPath, [
-      "dist/tools/cli.js", "connect", origin, "--agent", "community-favorites",
+      "dist/src/cli.js", "connect", origin, "--agent", "community-favorites",
       "--client-id", "favorites", "--webhook-url", connection.webhookUrl,
       "--callback-port", String(callbackPort), "--port", String(webhookPort),
     ], { env: { ...process.env, BASSTOK_CONNECTION_FILE: path }, timeout: 10_000,
@@ -217,7 +217,7 @@ test("CLI offers useful help and rejects incomplete noninteractive setup before 
     [["connect", "https://community.example", "--agent", "unknown"], /Unknown Agent/, 1],
     [["connect", "https://community.example"], /Application ID.*required/, 1],
   ] as const) {
-    const child = spawn(process.execPath, ["dist/tools/cli.js", ...args], { stdio: ["ignore", "pipe", "pipe"] });
+    const child = spawn(process.execPath, ["dist/src/cli.js", ...args], { stdio: ["ignore", "pipe", "pipe"] });
     let output = "";
     child.stdout.on("data", (data: Buffer) => { output += data.toString(); });
     child.stderr.on("data", (data: Buffer) => { output += data.toString(); });

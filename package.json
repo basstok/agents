@@ -5,7 +5,7 @@
   "description": "Runnable external Basstok Agents and public contract documentation",
   "type": "module",
   "bin": {
-    "basstok-agent": "dist/tools/cli.js"
+    "basstok-agent": "dist/src/cli.js"
   },
   "engines": {
     "node": ">=24"
@@ -19,7 +19,7 @@
     "start:polls": "node --env-file-if-exists=.env.local dist/agents/quick-polls.js",
     "start:closeout": "node --env-file-if-exists=.env.local dist/agents/discussion-closeout.js",
     "start:favorites": "node --env-file-if-exists=.env.local dist/agents/community-favorites.js",
-    "connect": "node --env-file-if-exists=.env.local dist/tools/cli.js connect",
+    "connect": "node --env-file-if-exists=.env.local dist/src/cli.js connect",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",

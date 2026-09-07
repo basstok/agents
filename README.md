@@ -6,24 +6,46 @@ Five useful Agents for [Basstok](https://basstok.com/), ready to install in your
 community or run yourself. Each is a small external program using the Basstok
 REST API with explicit permission.
 
-[Explore Basstok](https://basstok.com/) · [Run an Agent](docs/getting-started.md) · [Browse the code](agents)
+[See the Agents](#the-agents) · [Browse the code](agents) · [Developer guide](https://agents.basstok.com/)
 
-## Welcome guide
+## Run an Agent
 
-Give new Members a personal welcome. Write your message once; Welcome guide
-sends it from you when someone joins, with the Agent clearly identified.
+With Node.js 24+ on Linux or macOS, a
+[registered application](docs/connecting.md#register-an-application), and a
+reachable HTTPS webhook URL, start Welcome guide:
+
+```sh
+git clone https://github.com/basstok/agents.git
+cd agents
+npm ci
+npm run build
+npm run connect -- https://community.example
+npm start
+```
+
+Use your community URL, enter the application ID and webhook URL, and approve
+access in your browser. Forward webhooks to port 3000.
+[Full setup and other Agents →](docs/getting-started.md)
+
+Or install in Basstok: as a Manager, open **Account → Agents** on
+iPhone or Android, or **Account → Administration → Agents** on the web.
+Choose an Agent and review its permissions. Uninstall from the same place.
+
+## The Agents
+
+### Welcome guide
+
+Write your welcome once. New Members receive it from you, with the Agent
+clearly identified.
 
 <p>
   <img src="docs/images/welcome-guide-permissions.png" alt="Write a welcome message and review access before installing Welcome guide" width="240" height="522">
   <img src="docs/images/welcome-guide-message.png" alt="A new Member receives Mara’s welcome, sent by Welcome guide" width="240" height="522">
 </p>
 
-Write your greeting → install → new Members receive it. The message field is
-available on iPhone, Android, and the web.
-
 [Read the code →](agents/welcome-guide.ts)
 
-## Help desk
+### Help desk
 
 Keep a help request moving. Add the **Help request** Label to a post and Help
 desk starts a private follow-up with its author.
@@ -35,7 +57,7 @@ desk starts a private follow-up with its author.
 
 [Read the code →](agents/help-desk.ts)
 
-## Quick polls
+### Quick polls
 
 Let the community choose. Publish two to four bullet-point choices with the
 **Quick poll** Label. Quick polls adds a guide so Members can vote with reactions.
@@ -47,7 +69,7 @@ Let the community choose. Publish two to four bullet-point choices with the
 
 [Read the code →](agents/quick-polls.ts)
 
-## Discussion closeout
+### Discussion closeout
 
 Give a discussion a clear finish. With the **20-comment discussion** Label,
 the Agent adds a participation recap and pauses replies after 20 visible Comments.
@@ -59,7 +81,7 @@ the Agent adds a participation recap and pauses replies after 20 visible Comment
 
 [Read the code →](agents/discussion-closeout.ts)
 
-## Community favorites
+### Community favorites
 
 Make good posts easier to find. Add the **Favorites eligible** Label; after
 five reactions, Community favorites features the post.
@@ -71,26 +93,13 @@ five reactions, Community favorites features the post.
 
 [Read the code →](agents/community-favorites.ts)
 
-## Use them in Basstok
-
-As a Manager, open **Account → Agents** on iPhone or Android, or
-**Account → Administration → Agents** on the web. Choose an Agent, review its
-permissions, and install. Uninstall it from the same place.
-
-Agents have no access by default. They act within the responsible Member’s
-current authority and the resources explicitly granted to them. Uninstalling
-stops future actions; it does not undo work already completed.
-
-The screenshots show Basstok for iPhone. Agents also work with Android and the web.
-
 ## Make one your own
 
-The five programs in [agents/](agents) are ready to run or adapt. For example,
-this is Community favorites:
+Adapt the programs in [agents/](agents). Community favorites:
 
 ```ts
-import { requiredEnvironment } from "./src/environment.js";
-import { serveAgent } from "./src/webhooks.js";
+import { requiredEnvironment } from "../src/environment.js";
+import { serveAgent } from "../src/webhooks.js";
 
 const labelId = requiredEnvironment("BASSTOK_FAVORITES_LABEL_ID");
 
@@ -106,20 +115,20 @@ await serveAgent({
 });
 ```
 
-[Get started](docs/getting-started.md) to connect and run one, or
-[write your own Agent](docs/writing-an-agent.md). Use TypeScript or any language
-that can make ordinary HTTP requests.
+[Write your own Agent](docs/writing-an-agent.md) using TypeScript or any
+language that can make ordinary HTTP requests.
 
-Running your own copy? Change the welcome text in
-[Welcome guide](agents/welcome-guide.ts), or read your own program’s settings.
-The installation screens shown above belong to Basstok’s official Agents;
-third-party parameters do not automatically create screens in Basstok.
+For your own welcome text, edit [Welcome guide](agents/welcome-guide.ts).
+Basstok’s installation screens apply to the official catalog; third-party
+Agents provide their own settings.
 
-The [Agent guide](https://agents.basstok.com/) covers connection and hosting.
-The shared [Basstok REST API](https://github.com/basstok/api) has its own
-reference and OpenAPI contract. Run `npm run check` to build, test, and check
-documentation links.
+## Access stays explicit
 
-## License
+Agents have no access by default. They act within the responsible Member’s
+current authority and the resources explicitly granted to them. Uninstalling
+stops future actions; it does not undo work already completed.
 
-[MIT](LICENSE)
+The screenshots show Basstok for iPhone. Agents also work with Android and the web.
+
+[REST API](https://github.com/basstok/api) · [Contributing](.github/CONTRIBUTING.md)
+· [Security](.github/SECURITY.md) · [MIT license](LICENSE)
