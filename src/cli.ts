@@ -45,7 +45,7 @@ Run this command again, with the Agent stopped, to reconnect.
   --callback-port <port>  Registered local callback port (default 3001)
   --port <port>           Webhook listener port (default 3000)
 
-Setup: https://agents.basstok.com/connecting
+Setup: https://github.com/basstok/agents/blob/main/docs/connecting.md
 Connection files are local, owner-only, and must stay out of Git.`);
     return;
   }

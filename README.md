@@ -6,7 +6,7 @@ Five useful Agents for [Basstok](https://basstok.com/), ready to install in your
 community or run yourself. Each is a small external program using the Basstok
 REST API with explicit permission.
 
-[See the Agents](#the-agents) · [Browse the code](agents) · [Developer guide](https://agents.basstok.com/)
+[See the Agents](#the-agents) · [Browse the code](agents) · [Developer guide](docs/getting-started.md)
 
 ## Run an Agent
 
