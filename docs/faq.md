@@ -53,6 +53,11 @@ This stops future access; it does not undo completed work.
 Basstok remains usable. When the Agent returns, use current resource state
 rather than assuming every change was delivered. Make actions safe to repeat.
 
+## Does pausing activity notifications stop Agents?
+
+No. That setting pauses Member notifications, activity email and push, not
+Agent webhooks or actions. Uninstall an Agent or revoke its grant to stop it.
+
 ## How do I reconnect?
 
 Stop the Agent, run `npm run connect`, approve again, and restart. Keep the
