@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { featureCommunityFavorite } from "../agents/community-favorites.js";
+import { featureCommunityFavorite, reactionThreshold } from "../agents/community-favorites.js";
 import { closeDiscussion } from "../agents/discussion-closeout.js";
 import { acknowledgeHelpRequest } from "../agents/help-desk.js";
 import { parsePollChoices, publishPollGuide } from "../agents/quick-polls.js";
@@ -709,6 +709,28 @@ test("Community favorites features selected Content at five reactions and never 
     { method: "GET", body: undefined },
     { method: "PUT", body: { featured: true } },
   ]);
+});
+
+test("Favorites validates configuration and honors a custom threshold", async () => {
+  assert.equal(reactionThreshold(), 5);
+  assert.equal(reactionThreshold("10"), 10);
+  for (const value of ["", "0", "-1", "1.5", "1e2", " 5", "NaN", "9007199254740992"]) {
+    assert.throws(() => reactionThreshold(value));
+  }
+  const requests: RequestRecord[] = [];
+  let count = 9;
+  const api = recordingClient(requests, (url) => url.includes("reaction-summary")
+    ? Response.json(reactionSummary(count)) : Response.json({ id: "favorite" }));
+  const post = content({ labels: [{ id: "favorites" }] });
+  await featureCommunityFavorite(post, api, "favorites", 10);
+  assert.deepEqual(requests.map(({ method }) => method), ["GET"]);
+  count = 10;
+  await featureCommunityFavorite(post, api, "favorites", 10);
+  assert.deepEqual(requests.map(({ method }) => method), ["GET", "GET", "PUT"]);
+  requests.length = 0;
+  await featureCommunityFavorite(post, api, "another-label", 10);
+  await assert.rejects(featureCommunityFavorite(post, api, "favorites", Infinity));
+  assert.equal(requests.length, 0);
 });
 
 function recordingClient(

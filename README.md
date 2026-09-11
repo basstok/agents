@@ -86,6 +86,9 @@ the Agent adds a participation recap and pauses replies after 20 visible Comment
 Make good posts easier to find. Add the **Favorites eligible** Label; after
 five reactions, Community favorites features the post.
 
+Running it yourself? Choose the reaction threshold with
+`BASSTOK_FAVORITES_REACTIONS`; the default is five.
+
 <p>
   <img src="docs/images/community-favorites-featured.png" alt="A post becomes featured after the community gives it five reactions" width="240" height="522">
   <img src="docs/images/community-favorites-permissions.png" alt="Review Community favorites and its selected Content before installing" width="240" height="522">

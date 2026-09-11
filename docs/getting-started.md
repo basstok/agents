@@ -82,6 +82,13 @@ and run `npm run start:closeout`.
 Connect with `--agent community-favorites`. Set `BASSTOK_FAVORITES_LABEL_ID`
 and run `npm run start:favorites`.
 
+Optionally set `BASSTOK_FAVORITES_REACTIONS=10` to feature posts after ten
+reactions instead of five. Use a positive whole number. This setting applies
+to the Agent you run yourself; it does not change the installed official Agent.
+Only posts covered by its grant and selected Label are eligible. Changing the
+threshold affects subsequent processing; it does not remove existing features
+or automatically rescan older posts.
+
 </details>
 
 ## Next steps
