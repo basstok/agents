@@ -20,6 +20,10 @@ joins, with you as the sender and the Agent clearly identified.
 
 [See Help desk, Quick polls, Discussion closeout, and Community favorites →](official-agents.md)
 
+Want to add guidance to selected discussions? Run
+[Discussion guide](getting-started.md#discussion-guide) with your own Markdown
+instructions. It adds one helpful Comment per post and selected Label.
+
 ## A useful Agent stays small
 
 Feature selected Content after five reactions:

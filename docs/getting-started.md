@@ -91,6 +91,46 @@ or automatically rescan older posts.
 
 </details>
 
+## Discussion guide
+
+Give selected discussions a useful starting point. For a help Label, for
+example, ask people to include what they tried and what happened. For a
+critique Label, explain the kind of feedback that helps.
+
+Register an application with `content:read content:write`, then connect:
+
+```sh
+npm run connect -- https://community.example --agent discussion-guide
+```
+
+[Select its Label on the grant](connecting.md#select-content-resources).
+Add these settings to your local `.env.local`, using that Label's ID:
+
+```dotenv
+BASSTOK_GUIDE_LABEL_ID=your-label-id
+BASSTOK_GUIDE_TEXT="**To help others answer:** include what you tried and what happened."
+```
+
+```sh
+npm run start:guide
+```
+
+On the next change to an eligible post, the Agent adds your text as an
+ordinary Comment. It skips hidden posts, posts awaiting review and discussions
+with replies paused. This is guidance, not a required form or a moderation rule.
+
+The text supports Markdown, up to 2,048 UTF-8 bytes. It is shared verbatim with
+everyone who can read the post; don't include private instructions or credentials.
+Restart after changing settings. Existing guide Comments, including human edits,
+stay unchanged. Repeated deliveries and restarts reuse the same Comment identity
+for that post and Label. Removing and reapplying the Label does not add another
+guide, and startup does not scan old posts. A subsequent eligible change can add
+the guide to an older post.
+
+Stop the process to stop handling events; revoke its grant to remove future
+API access. Already posted Comments remain. Run it yourself using the same
+HTTPS webhook setup above; it is not in Basstok's installation catalog.
+
 ## Next steps
 
 - [Agent behavior and permissions](official-agents.md).

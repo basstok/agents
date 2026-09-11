@@ -17,6 +17,7 @@
     "start:welcome": "node --env-file-if-exists=.env.local dist/agents/welcome-guide.js",
     "start:help-desk": "node --env-file-if-exists=.env.local dist/agents/help-desk.js",
     "start:polls": "node --env-file-if-exists=.env.local dist/agents/quick-polls.js",
+    "start:guide": "node --env-file-if-exists=.env.local dist/agents/discussion-guide.js",
     "start:closeout": "node --env-file-if-exists=.env.local dist/agents/discussion-closeout.js",
     "start:favorites": "node --env-file-if-exists=.env.local dist/agents/community-favorites.js",
     "connect": "node --env-file-if-exists=.env.local dist/src/cli.js connect",

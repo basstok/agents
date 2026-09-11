@@ -11,6 +11,7 @@ const agents = {
   "welcome-guide": { name: "Welcome guide", event: "member.created", scopes: "member:read chat:write" },
   "help-desk": { name: "Help desk", event: "content.changed", scopes: "content:read chat:write" },
   "quick-polls": { name: "Quick polls", event: "content.changed", scopes: "content:read content:write" },
+  "discussion-guide": { name: "Discussion guide", event: "content.changed", scopes: "content:read content:write" },
   "discussion-closeout": {
     name: "Discussion closeout", event: "content.changed",
     scopes: "content:read content:write moderation:write",

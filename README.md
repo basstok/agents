@@ -2,8 +2,8 @@
 
 Welcome new Members. Run a poll. Bring a good discussion into view.
 
-Five useful Agents for [Basstok](https://basstok.com/), ready to install in your
-community or run yourself. Each is a small external program using the Basstok
+Useful Agents for [Basstok](https://basstok.com/): five available to install,
+plus [Discussion guide](#discussion-guide) to run yourself. Each is a small external program using the Basstok
 REST API with explicit permission.
 
 [See the Agents](#the-agents) · [Browse the code](agents) · [Developer guide](docs/getting-started.md)
@@ -97,6 +97,20 @@ Running it yourself? Choose the reaction threshold with
 [Read the code →](agents/community-favorites.ts)
 
 ## Make one your own
+
+### Discussion guide
+
+Add helpful instructions beneath selected posts: what to include in a help
+request, how to give a useful critique, or how to take part in an event.
+Choose a Label and write your guidance in Markdown. The Agent adds it once
+as a Comment, without replacing existing replies.
+
+[Read the code](agents/discussion-guide.ts) ·
+[Run Discussion guide](docs/getting-started.md#discussion-guide)
+
+Discussion guide is independently runnable; it is not in Basstok's installation catalog.
+
+### Adapt an Agent
 
 Adapt the programs in [agents/](agents). Community favorites:
 
